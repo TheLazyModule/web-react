@@ -19,8 +19,8 @@ const MapView = () => {
                     <BaseLayer name="Satellite View">
                         <TileLayer
                             url='https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
-                            maxZoom= {20}
-                            subdomains={['mt1','mt2','mt3']}
+                            maxZoom={20}
+                            subdomains={['mt1', 'mt2', 'mt3']}
                         />
                     </BaseLayer>
                 </LayersControl>
