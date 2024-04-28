@@ -1,6 +1,6 @@
 import {LayersControl, MapContainer, TileLayer} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import Sidebar from './Sidebar/Sidebar';
+import Sidebar from '../Sidebar/Sidebar.tsx';
 
 const MapView = () => {
     const {BaseLayer} = LayersControl;

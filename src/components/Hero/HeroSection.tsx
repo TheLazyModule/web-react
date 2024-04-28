@@ -1,6 +1,6 @@
 "use client";
 import {motion} from "framer-motion";
-import {ImagesSlider} from "./ui/hero-section";
+import {ImagesSlider} from "./hero-section.tsx";
 import heroData from "@/constants/hero-section-data.ts";
 
 export function HeroSection() {

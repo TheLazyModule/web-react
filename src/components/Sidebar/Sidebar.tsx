@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import './Sidebar.css';  // Ensure your CSS is properly imported
+import Form from '../Form/Form';
+import {SiGoogleclassroom} from "react-icons/si";
 
 const Sidebar = ({position = 'left', theme = 'light'}) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +18,14 @@ const Sidebar = ({position = 'left', theme = 'light'}) => {
                 <div className="sidepanel-content-wrapper">
                     <div className="sidepanel-content">
                         {/* Your sidebar content here */}
-                        Sidebar Content
+
+                        <div className='flex flex-col items-center sm:my-0'>
+                            <SiGoogleclassroom size={90} color='#093850'
+                                               className=" hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+
+                        </div>
+                        <Form/>
+
                     </div>
                 </div>
             </div>
