@@ -1,35 +1,48 @@
 import {FaRoute} from "react-icons/fa6";
 import {SiGoogleclassroom} from "react-icons/si";
 import {BsBuilding} from "react-icons/bs";
+import {motion} from "framer-motion";
 
 const Features = () => {
     return (
 
-        <section className='bg-cyan-100'>
+        <section className=''>
             <div className='flex justify-center'>
-                <h1 className='text-6xl mt-6 text-[#093860]'>Features</h1>
+                <h1 className='text-6xl mt-6 text-[#12372A]'>Features</h1>
             </div>
-            <div className='flex flex-col justify-between sm:flex-row items-center px-20 py-20'>
-                <div className='flex flex-col items-center '>
-                    <h3 className='text-[#093850] text-2xl'>Find Building</h3>
-                    <BsBuilding size={120} color='#093850'
-                                className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
-                </div>
+            <motion.div
+                initial={{opacity: 0.3, y: 130}}
+                whileInView={{opacity: 1, y: 0}}
+                transition={{
+                    delay: 0.3,
+                    duration: 0.5,
+                    ease: "circInOut",
+                }}
+                className=""
+            >
+                <div className='flex flex-col justify-between sm:flex-row items-center px-20 py-20'>
+                    <motion.div className='flex flex-col items-center '>
+                        <h3 className='text-[#1A4D2E] text-2xl'>Find Building</h3>
+                        <BsBuilding size={120} color='#4F6F52'
+                                    className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+                    </motion.div>
 
-                <div className='flex flex-col items-center my-10 sm:my-0'>
-                    <h3 className='text-[#093850] text-2xl'>Find Classroom</h3>
-                    <SiGoogleclassroom size={120} color='#093850'
-                                       className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
-                </div>
+                    <motion.div className='flex flex-col items-center my-10 sm:my-0'>
+                        <h3 className='text-[#1A4D2E] text-2xl'>Find Classroom</h3>
+                        <SiGoogleclassroom size={120} color='#4F6F52'
+                                           className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+                    </motion.div>
 
-                <div className='flex flex-col items-center'>
-                    <h3 className='text-[#093850] text-2xl'>Find Place</h3>
-                    <FaRoute size={120} color='#093850'
-                             className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+                    <motion.div className='flex flex-col items-center'>
+                        <h3 className='text-[#1A4D2E] text-2xl'>Find Place</h3>
+                        <FaRoute size={120} color='#4F6F52'
+                                 className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+                    </motion.div>
                 </div>
-            </div>
+            </motion.div>
         </section>
-    );
+    )
+        ;
 };
 
 export default Features;

@@ -1,12 +1,13 @@
 // import HeroSection from "@/components/HeroSection";
 import Features from "@/components/Features/Features.tsx";
-import LampSection from "@/components/Lamp/LampHeader.tsx";
+import HeroSection from "@/components/Hero/HeroSection.tsx";
+// import LampSection from "@/components/Lamp/LampHeader.tsx";
 
 const HomePage = () => {
     return (
         <div>
-            {/*<HeroSection/>*/}
-            <LampSection />
+            <HeroSection/>
+            {/*<LampSection />*/}
             <Features/>
 
         </div>

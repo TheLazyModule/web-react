@@ -7,6 +7,7 @@ const Navbar = () => {
     const [nav, setNav] = useState(false);
     const currentLocation = useLocation().pathname.replace('/', '');
 
+
     // Toggle function to handle the navbar's display
     const handleNav = () => {
         setNav(!nav);
@@ -22,17 +23,17 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`${currentLocation === 'map'? 'hidden': ''}`}>
+            className={`${currentLocation === 'map'? 'hidden': ''} ${currentLocation === 'contact'? '': ''}`}>
             <div
-                className='z-[90000]  flex justify-end md:justify-center  items-center  mx-auto h-20 px-4 absolute left-0 right-0 top-0 w-full'>
+                className={ `z-[90000] ${currentLocation? 'bg-white': 'bg-transparent'}  flex justify-end md:justify-center  items-center  mx-auto h-20 px-4 absolute left-0 right-0 top-0 w-full` }>
 
                 {/* Desktop Navigation */}
                 <ul className='hidden md:flex'>
                     {navItems.map(item => (
-                        <NavLink to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
+                        <NavLink  key={item.id} to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
                             <li
                                 key={item.id}
-                                className='p-3 hover:bg-white hover:text-cyan-500 hover:font-bold text-white  rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem] text-transparent'
+                                className={ `p-3 ${currentLocation === ''? 'text-white hover:bg-white hover:text-green-700': 'text-green-700 hover:bg-green-700 hover:text-white'}  hover:font-bold   rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem] text-transparent` }
                             >
                                 {item.text}
                             </li>
@@ -58,10 +59,10 @@ const Navbar = () => {
 
                     {/* Mobile Navigation Items */}
                     {navItems.map(item => (
-                        <NavLink to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
+                        <NavLink key={item.id} to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
                         <li
                             key={item.id}
-                            className='p-4 text-xl border-b rounded-xl cursor-pointer duration-300  hover:bg-white hover:text-cyan-500 hover:font-bold text-white   m-2     sm:text-[1rem] md:text-[1.2rem] text-transparent'
+                            className='p-4 text-xl border-b rounded-xl cursor-pointer duration-300  hover:bg-white hover:text-green-700 hover:font-bold text-white   m-2     sm:text-[1rem] md:text-[1.2rem] text-transparent'
                         >
                             {item.text}
                         </li>
@@ -70,12 +71,12 @@ const Navbar = () => {
                 </ul>
             </div>
 
-            <div className="relative mt-20 flex w-full flex-1 scale-y-125 items-center justify-center isolate z-0 ">
-                <div
-                    className="absolute  w-[100%] left-0 bg-slate-950 h-40 bottom-0 z-20 "/>
-                <div
-                    className="absolute inset-auto z-50 h-36 w-[28rem] -translate-y-1/2 rounded-full bg-cyan-500 opacity-50 blur-3xl"></div>
-            </div>
+            {/*<div className="relative mt-20 flex w-full flex-1 scale-y-125 items-center justify-center isolate z-0 ">*/}
+            {/*    <div*/}
+            {/*        className="absolute  w-[100%] left-0 bg-slate-950 h-40 bottom-0 z-20 "/>*/}
+            {/*    <div*/}
+            {/*        className="absolute inset-auto z-50 h-36 w-[28rem] -translate-y-1/2 rounded-full bg-cyan-500 opacity-50 blur-3xl"></div>*/}
+            {/*</div>*/}
 
         </nav>
     );

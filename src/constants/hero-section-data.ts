@@ -1,6 +1,6 @@
-import img_1 from "../assets/campus_images/0001.png"
-import img_2 from "../assets/campus_images/0002.png"
-import img_3 from "../assets/campus_images/0003.png"
+import img_1 from "../assets/campus_images/1hero.png"
+import img_2 from "../assets/campus_images/2hero.png"
+import img_3 from "../assets/campus_images/3hero.png"
 
 
 const heroData: string[] = [
