@@ -16,7 +16,7 @@ const Sidebar = ({position = 'left', theme = 'light'}) => {
         <div className={sidebarClasses}>
             <div className="sidepanel-inner-wrapper">
                 <div className="sidepanel-content-wrapper">
-                    <div className="sidepanel-content">
+                    <div className="sidepanel-content mt-24 ">
                         {/* Your sidebar content here */}
 
                         <div className='flex flex-col items-center sm:my-0'>

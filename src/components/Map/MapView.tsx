@@ -7,7 +7,7 @@ const MapView = () => {
     return (
         <div className="relative">
             <Sidebar position="left" theme="light"/>
-            <MapContainer center={[6.673175, -1.565423]} zoom={13} style={{height: "100vh", width: "100%"}}>
+            <MapContainer center={[6.673175, -1.565423]} zoom={15} style={{height: "100vh", width: "100%"}}>
                 <LayersControl>
                     <BaseLayer checked name="OpenStreetMap">
                         <TileLayer

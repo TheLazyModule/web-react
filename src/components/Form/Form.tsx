@@ -35,7 +35,7 @@ function Form() {
                         <LabelInputContainer className='mb-6 ml-3'>
                             {/*<Label htmlFor="from">From</Label>*/}
                             <Input ref={fromRef} id="from" placeholder="Choose Starting point or Click on the map"
-                                   type="text"/>
+                                   type="text" />
                         </LabelInputContainer>
                         <LabelInputContainer className='mt-6 ml-3'>
                             {/*<Label htmlFor="to">To</Label>*/}
