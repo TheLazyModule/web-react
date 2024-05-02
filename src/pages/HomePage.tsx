@@ -1,6 +1,6 @@
 // import HeroSection from "@/components/HeroSection";
-import Features from "@/components/Features";
-import LampSection from "@/components/LampHeader.tsx";
+import Features from "@/components/Features/Features.tsx";
+import LampSection from "@/components/Lamp/LampHeader.tsx";
 
 const HomePage = () => {
     return (
