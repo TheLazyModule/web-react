@@ -16,7 +16,7 @@ function Form() {
     return (
         <div
             className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-            <h2 className="font-bold text-[#093839] text-2xl  dark:text-neutral-200">
+            <h2 className="font-bold text-neutral-800 text-2xl  dark:text-neutral-200">
                 Welcome <br/>to Find My classroom
             </h2>
             <p className="text-neutral-600 text-lg max-w-sm mt-2 dark:text-neutral-300">
@@ -26,10 +26,10 @@ function Form() {
             <form className="my-8" onSubmit={handleSubmit}>
                 <div className="flex flex-row space-y-2 md:space-y-0 mb-4">
                     <div className='items-center'>
-                        <IoAccessibility size={30} color='green'/>
+                        <IoAccessibility size={25} color='green'/>
                         <IoEllipsisVertical size={18} className='ml-1 mt-3'/>
                         <IoEllipsisVertical size={18} className='ml-1 mb-3'/>
-                        <IoLocationOutline size={30} color='red'/>
+                        <IoLocationOutline size={25} color='red'/>
                     </div>
                     <div>
                         <LabelInputContainer className='mb-6 ml-3'>

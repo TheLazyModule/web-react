@@ -8,14 +8,14 @@ const Features = () => {
 
         <section className=''>
             <div className='flex justify-center'>
-                <h1 className='text-6xl mt-6 text-[#12372A]'>Features</h1>
+                <h1 className='text-5xl md:text-7xl font-bold  mt-6 text-[#12372A]'>Features</h1>
             </div>
             <motion.div
                 initial={{opacity: 0.3, y: 130}}
                 whileInView={{opacity: 1, y: 0}}
                 transition={{
                     delay: 0.3,
-                    duration: 0.5,
+                    duration: 1.0,
                     ease: "circInOut",
                 }}
                 className=""

@@ -23,7 +23,7 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`${currentLocation === 'map'? 'hidden': ''} ${currentLocation === 'contact'? '': ''}`}>
+            className={`${currentLocation === 'map'? 'hidden': ''} `}>
             <div
                 className={ `z-[90000] ${currentLocation? 'bg-white': 'bg-transparent'}  flex justify-end md:justify-center  items-center  mx-auto h-20 px-4 absolute left-0 right-0 top-0 w-full` }>
 
@@ -33,7 +33,7 @@ const Navbar = () => {
                         <NavLink  key={item.id} to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
                             <li
                                 key={item.id}
-                                className={ `p-3 ${currentLocation === ''? 'text-white hover:bg-white hover:text-green-700': 'text-green-700 hover:bg-green-700 hover:text-white'}  hover:font-bold   rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem] text-transparent` }
+                                className={ `p-3 ${currentLocation? 'text-green-800 hover:bg-green-700 hover:text-white': 'text-white hover:bg-white hover:text-green-700'}  hover:font-bold   rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem]` }
                             >
                                 {item.text}
                             </li>
@@ -43,15 +43,15 @@ const Navbar = () => {
 
                 {/* Mobile Navigation Icon */}
                 <div onClick={handleNav} className='block md:hidden'>
-                    {nav ? <AiOutlineClose className='invert' size={20}/> :
-                        <AiOutlineMenu className='invert' size={20}/>}
+                    {nav ? <AiOutlineClose className={ `${currentLocation === 'contact'? '': 'invert' } ` } size={20}/> :
+                        <AiOutlineMenu className={ `${currentLocation === 'contact'? '': 'invert' } ` } size={20}/>}
                 </div>
 
                 {/* Mobile Navigation Menu */}
                 <ul
                     className={`z-[5000] ${
                         nav
-                            ? ' fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900  ease-in-out duration-500 bg-green-300/15'
+                            ? ` fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900  ease-in-out duration-500 ${ currentLocation === 'contact'?'bg-gray-700/75': 'bg-green-300/15' }`
                             : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
                     }`
                     }
@@ -60,12 +60,12 @@ const Navbar = () => {
                     {/* Mobile Navigation Items */}
                     {navItems.map(item => (
                         <NavLink key={item.id} to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
-                        <li
-                            key={item.id}
-                            className='p-4 text-xl border-b rounded-xl cursor-pointer duration-300  hover:bg-white hover:text-green-700 hover:font-bold text-white   m-2     sm:text-[1rem] md:text-[1.2rem] text-transparent'
-                        >
-                            {item.text}
-                        </li>
+                            <li
+                                key={item.id}
+                                className={ `${currentLocation === 'contact'? 'text-white hover:bg-[#F5EFE6] hover:text-gray-600 hover:font-bold ': 'text-white hover:bg-white hover:text-green-700 hover:font-bold'}  p-4 text-xl border-b rounded-xl cursor-pointer duration-300      m-2     sm:text-[1rem] md:text-[1.2rem]` }
+                            >
+                                {item.text}
+                            </li>
                         </NavLink>
                     ))}
                 </ul>

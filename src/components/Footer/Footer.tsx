@@ -1,14 +1,12 @@
 // import {FaRoute} from "react-icons/fa6";
-// import {NavLink, useLocation} from "react-router-dom";
-
-import {Link} from "react-router-dom";
+import {useLocation, Link} from "react-router-dom";
 
 const Footer = () => {
-    // const currentLocation = useLocation().pathname.replace('/', '');
+    const currentLocation = useLocation().pathname.replace('/', '');
     const currentYear = new Date().getFullYear();
     return (
         <>
-            <div className=" bg-[#F5EFE6]">
+            <div className={`${currentLocation === 'map' ? 'hidden' : ''} bg-[#F5EFE6]`}>
                 <div className="max-w-2xl mx-auto text-white py-10">
                     <div className="text-center">
                         <h3 className="text-4xl mb-3 text-gray-600"> Download now </h3>

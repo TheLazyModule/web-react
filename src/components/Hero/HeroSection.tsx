@@ -18,6 +18,8 @@ export function HeroSection() {
                 }}
                 transition={{
                     duration: 0.6,
+                    ease: "easeInOut",
+
                 }}
                 className="z-50 flex flex-col justify-center items-center "
             >
