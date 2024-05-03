@@ -1,23 +1,31 @@
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { cn } from "@/lib/utils.ts"; // Assuming the cn utility handles classname combinations
+import { cn } from "@/lib/utils.ts"; // Ensure this utility function is correctly imported
+
+type ImagesSliderProps = {
+    images: string[];
+    children: React.ReactNode;
+    overlay?: boolean;
+    overlayClassName?: string;  // Make this optional
+    className?: string;
+    autoplay?: boolean;
+};
 
 export const ImagesSlider = ({
                                  images,
                                  children,
                                  overlay = true,
-                                 overlayClassName,
-                                 className,
+                                 overlayClassName = "",  // Provide a default empty string if none provided
+                                 className = "",
                                  autoplay = true,
-                             }): React.JSX.Element => {
+                             }: ImagesSliderProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loadedImages, setLoadedImages] = useState<string[]>([]);
 
-    // Load images on mount
     useEffect(() => {
         const loadImages = () => {
             const loadPromises = images.map(image =>
-                new Promise((resolve, reject) => {
+                new Promise<string>((resolve, reject) => {
                     const img = new Image();
                     img.src = image;
                     img.onload = () => resolve(image);
@@ -26,48 +34,31 @@ export const ImagesSlider = ({
             );
 
             Promise.all(loadPromises)
-                .then(loaded => setLoadedImages(loaded as string[]))
+                .then(loaded => setLoadedImages(loaded))
                 .catch(error => console.error("Failed to load images", error));
         };
 
         loadImages();
     }, [images]);
 
-    // Handle key presses for navigation
     useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "ArrowRight") {
-                handleNext();
-            } else if (event.key === "ArrowLeft") {
-                handlePrevious();
-            }
-        };
+        const handleAutoplay = () => handleNext();
 
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
-
-    // Autoplay functionality
-    useEffect(() => {
         let interval: ReturnType<typeof setInterval> | null = null;
-        if (autoplay) {
-            interval = setInterval(handleNext, 5000);
+        if (autoplay && loadedImages.length > 0) {
+            interval = setInterval(handleAutoplay, 5000);
         }
 
         return () => {
             if (interval) clearInterval(interval);
         };
-    }, [autoplay ]);
+    }, [autoplay, loadedImages.length ]);
 
     const handleNext = () => {
         setCurrentIndex(prev => (prev + 1) % images.length);
     };
 
-    const handlePrevious = () => {
-        setCurrentIndex(prev => (prev - 1 < 0 ? images.length - 1 : prev - 1));
-    };
 
-    // Motion variants for fading in and out
     const fadeVariants = {
         initial: { opacity: 0 },
         enter: { opacity: 1, transition: { duration: 0.5 } },
@@ -88,7 +79,7 @@ export const ImagesSlider = ({
                         initial="initial"
                         animate="enter"
                         exit="exit"
-                        className="image h-full w-full absolute inset-0 object-cover object-center"
+                        className="absolute inset-0 w-full h-full object-cover object-center"
                     />
                 )}
             </AnimatePresence>
