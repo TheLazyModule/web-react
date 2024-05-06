@@ -38,7 +38,8 @@ const Navbar = () => {
                                 {item.text}
                             </li>
                         </NavLink>
-                    ))}
+                    ))
+                    }
                 </ul>
 
                 {/* Mobile Navigation Icon */}
