@@ -1,17 +1,29 @@
 "use client";
-import React, {useRef} from "react";
+import React from "react";
 import {cn} from "@/lib/utils.ts";
-import {Input} from "./input";
+// import {Input} from "./input";
 import {IoAccessibility} from "react-icons/io5";
 import {IoEllipsisVertical} from "react-icons/io5";
 import {IoLocationOutline} from "react-icons/io5";
+import {useForm, SubmitHandler} from "react-hook-form"
+import SelectWithSearch from "./select";
+// import useAll from "@/hooks/useAll.ts";
+
+interface IFormInput {
+    from: string;
+    to: string;
+}
 
 function Form() {
-    const fromRef = useRef<HTMLInputElement>(null);
-    const toRef = useRef<HTMLInputElement>(null);
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log("Form submitted");
+    // const locationData = useAll()
+    const {
+        register,
+        handleSubmit,
+        formState: {errors/*, isSubmitting, isSubmitSuccessful, isSubmitted*/}
+    } = useForm<IFormInput>();
+    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+        console.log(data);
+
     };
     return (
         <div
@@ -23,7 +35,7 @@ function Form() {
                 Where do you want to go?
             </p>
 
-            <form className="my-8" onSubmit={handleSubmit}>
+            <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-row space-y-2 md:space-y-0 mb-4">
                     <div className='items-center'>
                         <IoAccessibility size={25} color='green'/>
@@ -34,17 +46,22 @@ function Form() {
                     <div>
                         <LabelInputContainer className='mb-6 ml-3'>
                             {/*<Label htmlFor="from">From</Label>*/}
-                            <Input ref={fromRef} id="from" placeholder="Choose Starting point or Click on the map"
-                                   type="text" />
+                            <SelectWithSearch {...register("from", {required: true})}
+                                   // placeholder="Choose Starting point or Click on the map"
+                                   />
+                            {errors.from && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
                         </LabelInputContainer>
                         <LabelInputContainer className='mt-6 ml-3'>
                             {/*<Label htmlFor="to">To</Label>*/}
-                            <Input ref={toRef} id="to" placeholder="Choose Destination" type="text"/>
+                            <SelectWithSearch {...register("to", {required: true})}
+                                    // placeholder="Choose Destination"
+                                   />
+                            {errors.to && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
                         </LabelInputContainer>
                     </div>
                 </div>
                 <button
-                    className={`${fromRef.current?.value === '' || toRef.current?.value === '' ? 'disabled' : ''} bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]`}
+                    className='bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]'
                     type="submit"
                 >
                     Find &rarr;
@@ -53,7 +70,6 @@ function Form() {
 
                 <div
                     className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full"/>
-
             </form>
         </div>
     );
