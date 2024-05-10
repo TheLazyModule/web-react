@@ -1,109 +1,128 @@
-// SelectWithSearch.tsx
-"use client";
-import * as React from "react";
-import debounce from "lodash.debounce";
-import APIClient from "@/services/apiClient.ts";
+import {useState, useEffect, useRef} from "react";
+import useSearchText from "@/hooks/useSearchText.ts";
+import useLocationQueryStore from "@/hooks/useLocationStore.ts";
+import ModalComponent from "@/components/ui/modal.tsx";
+import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
 
-interface Option {
-    id: string;
-    text: string;
-}
+const ComboBox = ({type, onSelect}) => {
+    const searchText =
+        type === "from" ? useLocationQueryStore((s) => s.searchTextFrom) : useLocationQueryStore((s) => s.searchTextTo);
+    const setSearchText =
+        type === "from" ? useLocationQueryStore((s) => s.setSearchTextFrom) : useLocationQueryStore((s) => s.setSearchTextTo);
+    const {data, error, isLoading, isFetched} = type === "from" ? useSearchText() : useSearchTextTo();
+    const [dropdownVisible, setDropdownVisible] = useState(false);
 
-interface SelectWithSearchProps extends React.HTMLAttributes<HTMLDivElement> {
-    placeholder?: string;
-    name?: string;
-    className?: string;
-}
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-const apiClient = new APIClient<Option[]>("/all/search");
 
-const SelectWithSearch = React.forwardRef<HTMLDivElement, SelectWithSearchProps>(
-    ({ placeholder = "Search...", name, className, ...props }, ref) => {
-        // Ensure query is always a non-null string
-        const [query, setQuery] = React.useState<string>("");
-        const [options, setOptions] = React.useState<Option[]>([]);
-        const [_selected, setSelected] = React.useState<Option | null>(null);
-        const [loading, setLoading] = React.useState(false);
-        const [showDropdown, setShowDropdown] = React.useState(false);
+    const handleOptionSelect = (value) => {
+        setSearchText(value);
+        setDropdownVisible(false);
+        onSelect(value); // Notify the parent form about the selection
+    };
 
-        // Debounced search function
-        const debouncedSearch = React.useMemo(
-            () => debounce((input: string) => fetchOptions(input), 300),
-            []
-        );
+    const handleSearchChange = (e) => {
+        setSearchText(e.target.value);
+        setDropdownVisible(true);
+    };
 
-        // Fetch suggestions from backend
-        async function fetchOptions(input: string) {
-            if (input.length < 2) return; // Avoid querying for very short input
-            setLoading(true);
-            try {
-                const response = await apiClient.getAll({ params: { text: input } });
-                setOptions(response || []);
-            } catch (error) {
-                console.error("Error fetching options:", error);
-                setOptions([]);
-            } finally {
-                setLoading(false);
-            }
+
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setDropdownVisible(false);
         }
+    };
 
-        // Handle input changes
-        const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-            const input = event.target.value;
-            setQuery(input);
-            debouncedSearch(input);
-            setShowDropdown(true);
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
         };
+    }, []);
 
-        // Handle option selection
-        const handleOptionSelect = (option: Option) => {
-            setSelected(option);
-            setQuery(option.text || ""); // Ensure query is not null
-            setShowDropdown(false);
-        };
+    return (
+        <>
+            {error && <ModalComponent message={error.message}/>}
+            <div className="border rounded-xl shadow-sm dark:bg-neutral-800 dark:border-neutral-700">
+                <div className="max-w-sm" ref={dropdownRef}>
+                    {/* Search Box */}
+                    <div className="relative">
+                        <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-3.5">
+                            <svg
+                                className="flex-shrink-0 size-4 text-gray-400 dark:text-white/60"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.3-4.3"></path>
+                            </svg>
+                        </div>
+                        <input
+                            className="py-3 ps-10 pe-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                            type="text"
+                            placeholder="Type your location"
+                            value={searchText}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
 
-        // Clear selection if needed
-        const handleInputClear = () => {
-            setQuery(""); // Reset to an empty string, not null or undefined
-            setSelected(null);
-            setShowDropdown(false);
-        };
+                    {dropdownVisible && isFetched && searchText && searchText.length >= 2 && (
+                        <div
+                            className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
+                                {data?.map((r) => (
+                                    <div
+                                        key={r.id}
+                                        onClick={() => handleOptionSelect(r.name)}
+                                        className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
+                                    >
+                                        <div className="flex justify-between items-center w-full">
+                                            <div>{r.name}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-        return (
-            <div ref={ref} className={`relative ${className}`} {...props}>
-                <input
-                    type="text"
-                    name={name}
-                    value={query}
-                    onChange={handleInputChange}
-                    onFocus={() => setShowDropdown(true)}
-                    placeholder={placeholder}
-                    className="w-full px-4 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button onClick={handleInputClear} className="absolute right-2 top-2">
-                    ✖
-                </button>
-                {showDropdown && (
-                    <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md">
-                        {loading ? (
-                            <li className="p-2 text-center text-gray-500">Loading...</li>
-                        ) : (
-                            options.map((option) => (
-                                <li
-                                    key={option.id}
-                                    onClick={() => handleOptionSelect(option)}
-                                    className="p-3 z-[5000] cursor-pointer hover:bg-blue-500 text-black hover:text-white"
-                                >
-                                    {option.text}
-                                </li>
-                            ))
-                        )}
-                    </ul>
-                )}
+                    {isLoading && (
+                        <div
+                            className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
+                                <div
+                                    className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">
+                                    <div className="flex justify-between items-center w-full">
+                                        <div>Loading...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {data?.length === 0 && (
+                        <div
+                            className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
+                                <div
+                                    className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">
+                                    <div className="flex justify-between items-center w-full">
+                                        <div>No results</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
-        );
-    }
-);
-SelectWithSearch.displayName = "SelectWithSearch";
+        </>
+    );
+};
 
-export default SelectWithSearch;
+export default ComboBox;

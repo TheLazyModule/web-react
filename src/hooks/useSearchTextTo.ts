@@ -10,8 +10,8 @@ export interface Option {
     name: string;
 }
 
-const UseSearchText = () => {
-    const searchText = useLocationQueryStore(s => s.searchTextFrom);
+const UseSearchTextTo = () => {
+    const searchText = useLocationQueryStore(s => s.searchTextTo);
 
     return useQuery<Option[]>(
         {
@@ -26,4 +26,4 @@ const UseSearchText = () => {
         })
 };
 
-export default UseSearchText;
+export default UseSearchTextTo;

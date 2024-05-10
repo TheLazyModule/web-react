@@ -1,13 +1,12 @@
 "use client";
 import React from "react";
 import {cn} from "@/lib/utils.ts";
-// import {Input} from "./input";
 import {IoAccessibility} from "react-icons/io5";
 import {IoEllipsisVertical} from "react-icons/io5";
 import {IoLocationOutline} from "react-icons/io5";
 import {useForm, SubmitHandler} from "react-hook-form"
-import SelectWithSearch from "./select";
-// import useAll from "@/hooks/useAll.ts";
+import ComboBox from "./select";
+import useLocationQueryStore from "@/hooks/useLocationStore";
 
 interface IFormInput {
     from: string;
@@ -15,15 +14,16 @@ interface IFormInput {
 }
 
 function Form() {
-    // const locationData = useAll()
-    const {
-        register,
-        handleSubmit,
-        formState: {errors/*, isSubmitting, isSubmitSuccessful, isSubmitted*/}
-    } = useForm<IFormInput>();
-    const onSubmit: SubmitHandler<IFormInput> = (data) => {
-        console.log(data);
+    const setFrom = useLocationQueryStore(s => s.setFrom);
+    const setTo = useLocationQueryStore(s => s.setTo);
+    const {register, handleSubmit, setValue, formState: {errors}} = useForm<IFormInput>();
+    const onFromChange = (value) => setValue("from", value);
+    const onToChange = (value) => setValue("to", value);
 
+    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+        // console.log(data);
+        setFrom(data.from);
+        setTo(data.to);
     };
     return (
         <div
@@ -46,16 +46,13 @@ function Form() {
                     <div>
                         <LabelInputContainer className='mb-6 ml-3'>
                             {/*<Label htmlFor="from">From</Label>*/}
-                            <SelectWithSearch {...register("from", {required: true})}
-                                   // placeholder="Choose Starting point or Click on the map"
-                                   />
+                            <ComboBox type='from' onSelect={onFromChange} {...register("from", {required: true})}
+                            />
                             {errors.from && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
                         </LabelInputContainer>
                         <LabelInputContainer className='mt-6 ml-3'>
-                            {/*<Label htmlFor="to">To</Label>*/}
-                            <SelectWithSearch {...register("to", {required: true})}
-                                    // placeholder="Choose Destination"
-                                   />
+                            <ComboBox type='to' onSelect={onToChange} {...register("to", {required: true})}
+                            />
                             {errors.to && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
                         </LabelInputContainer>
                     </div>
