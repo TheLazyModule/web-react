@@ -18,8 +18,8 @@ export interface LocationQueryStore {
     locationName?: string;
     setFrom: (from: string) => void;
     setTo: (to: string) => void;
-    setSearchTextFrom: (searchText?: string) => void;
-    setSearchTextTo: (searchText?: string) => void;
+    setSearchTextFrom: (searchText: string) => void;
+    setSearchTextTo: (searchText: string) => void;
     setLocation: (location?: string) => void;
 }
 
@@ -27,11 +27,12 @@ export interface LocationQueryStore {
 const useLocationQueryStore = create<LocationQueryStore>((set) => ({
     locationQuery: {from: '', to: ''},
     searchTextFrom: '',
+    searchTextTo: '',
     locationName: '',
     setFrom: (from: string) => set((store) => ({locationQuery: {...store.locationQuery, from}})),
     setTo: (to: string) => set((store) => ({locationQuery: {...store.locationQuery, to}})),
-    setSearchTextFrom: (searchTextFrom?: string) => set((store) => ({...store, searchTextFrom})),
-    setSearchTextTo: (searchTextTo?: string) => set((store) => ({...store, searchTextTo})),
+    setSearchTextFrom: (searchTextFrom: string) => set((store) => ({...store, searchTextFrom})),
+    setSearchTextTo: (searchTextTo: string) => set((store) => ({...store, searchTextTo})),
     setLocation: (locationName?: string) => set((store) => ({...store, locationName}))
 }))
 

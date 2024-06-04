@@ -4,7 +4,7 @@ import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 
 interface Route {
     distance: number;
-    path: { name: string, geom: string, geom_geographic: string }[];
+    paths: { name: string, geom: string, geom_geographic: string }[];
 }
 
 const apiClient = new APIClient<Route>("/all/route");
