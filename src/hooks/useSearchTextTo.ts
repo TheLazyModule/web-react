@@ -19,10 +19,10 @@ const UseSearchTextTo = () => {
             queryKey: ['searchTo', searchTextTo],
             queryFn: () => apiClient.getAll({
                 params: {
-                    text: searchTextTo && searchTextTo.length > 3 ? searchTextTo : undefined
+                    text: searchTextTo && searchTextTo.length >= 2 ? searchTextTo : undefined
                 }
             }),
-            staleTime: ms('60d'),
+            staleTime: ms('10m'),
             retry: 5
         })
 };

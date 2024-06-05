@@ -20,10 +20,10 @@ const UseSearchText = () => {
             queryKey: ['searchFrom', searchTextFrom],
             queryFn: () => apiClient.getAll({
                 params: {
-                    text: searchTextFrom && searchTextFrom.length > 3 ? searchTextFrom : undefined
+                    text: searchTextFrom && searchTextFrom.length >= 2 ? searchTextFrom : undefined
                 }
             }),
-            staleTime: ms('60d'),
+            staleTime: ms('10m'),
             retry: 5
         })
 };

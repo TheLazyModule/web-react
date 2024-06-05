@@ -92,7 +92,7 @@ const ComboBox = ({type, onSelect}) => {
                         </div>
                     )}
 
-                    {isLoading && (
+                    {searchText && isLoading && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
@@ -106,7 +106,7 @@ const ComboBox = ({type, onSelect}) => {
                         </div>
                     )}
 
-                    {searchText && data?.length === 0 && (
+                    {searchText && data && data?.length === 0 && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
