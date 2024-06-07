@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from "react";
-import useSearchText from "@/hooks/useSearchText.ts";
+import useSearchText from "@/hooks/useSearchTextFrom.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import ModalComponent from "@/components/ui/modal.tsx";
 import useSearchTextTo from "@/hooks/useSearchTextTo.ts";

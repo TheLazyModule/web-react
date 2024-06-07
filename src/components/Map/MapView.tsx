@@ -1,12 +1,20 @@
 import {LayersControl, MapContainer, Polyline, TileLayer, Marker, Popup} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from 'leaflet';
 import Sidebar from "../Sidebar/Sidebar.tsx";
 import useRoute from "@/hooks/useRoute.ts";
 import parse from "wellknown";
 import {LatLngExpression} from "leaflet";
-
+import marker from '@/assets/location.svg';
 const polylineOptions = {color: "#077bd1db", weight: 6};
 
+
+const markerIcon = new L.Icon({
+    iconUrl: marker,
+    iconRetinaUrl: marker,
+    popupAnchor: [-0, -0],
+    iconSize: [32, 45],
+});
 const MapView = () => {
     const {data} = useRoute();
 
@@ -33,7 +41,9 @@ const MapView = () => {
         roundedDistance = data.distance ? Math.round(data.distance) : null;
 
         console.log("Polyline Coordinates:", polylineCoordinates);
-        console.log(`Approximately, ${roundedDistance}m walk`);
+        console.log(`
+Approximately, ${roundedDistance}m
+walk`);
     }
 
     const {BaseLayer} = LayersControl;
@@ -71,7 +81,7 @@ const MapView = () => {
                     )}
 
                     {lastCoordinate && roundedDistance !== null && (
-                        <Marker position={lastCoordinate}>
+                        <Marker icon={markerIcon} draggable position={lastCoordinate}>
                             <Popup>
                                 Destination <br/>
                                 Distance: {roundedDistance} meters.
