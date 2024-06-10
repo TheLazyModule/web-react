@@ -1,65 +1,61 @@
-import {LayersControl, MapContainer, Polyline, TileLayer, Marker, Popup} from "react-leaflet";
+import { useState, useEffect } from "react";
+import { LayersControl, MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from 'leaflet';
 import Sidebar from "../Sidebar/Sidebar.tsx";
-import useRoute from "@/hooks/useRoute.ts";
-import parse from "wellknown";
-import {LatLngExpression} from "leaflet";
-import marker from '@/assets/location.svg';
+import { BounceLoader } from "react-spinners";
+import usePolyline from "@/hooks/usePolyline.tsx";
+import RenderPolyline from "@/components/RenderPolyline.tsx";
+import Alert from "@/components/Alert"; // Import the Alert component
 
-const polylineOptions = {color: "#077bd1db", weight: 6};
-
-
-const markerIcon = new L.Icon({
-    iconUrl: marker,
-    iconRetinaUrl: marker,
-    popupAnchor: [-0, -0],
-    iconSize: [32, 45],
-});
 const MapView = () => {
-    const {data} = useRoute();
+    const { polylineCoordinates, isLoading, roundedDistance, lastCoordinate } = usePolyline();
+    const [loading, setLoading] = useState(true);
+    const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-    let polylineCoordinates: LatLngExpression[] = [];
-    let lastCoordinate: LatLngExpression | null = null;
-    let roundedDistance: number | null = null;
+    useEffect(() => {
+        setLoading(isLoading);
+    }, [isLoading]);
 
-    if (data && data.paths) {
-        // Extract all points and convert to LatLngExpression
-        polylineCoordinates = data.paths.map((point) => {
-            const parsed = parse(point.geom_geographic);
+    useEffect(() => {
+        const handleOffline = () => {
+            setIsOffline(true);
+        };
 
-            if (parsed && parsed.type === "Point" && parsed.coordinates.length === 2) {
-                // Swap from [longitude, latitude] to [latitude, longitude]
-                const [longitude, latitude] = parsed.coordinates;
-                return [latitude, longitude] as LatLngExpression;
-            }
+        const handleOnline = () => {
+            setIsOffline(false);
+        };
 
-            return null;
-        }).filter(Boolean) as LatLngExpression[];
+        window.addEventListener('offline', handleOffline);
+        window.addEventListener('online', handleOnline);
 
-        // Set the last coordinate and round the distance
-        lastCoordinate = polylineCoordinates.length > 0 ? polylineCoordinates[polylineCoordinates.length - 1] : null;
-        roundedDistance = data.distance ? Math.round(data.distance) : null;
+        return () => {
+            window.removeEventListener('offline', handleOffline);
+            window.removeEventListener('online', handleOnline);
+        };
+    }, []);
 
-        console.log("Polyline Coordinates:", polylineCoordinates);
-        console.log(`
-Approximately, ${roundedDistance}m
-walk`);
-    }
-
-    const {BaseLayer} = LayersControl;
+    const { BaseLayer } = LayersControl;
 
     return (
         <div className="relative">
-            <Sidebar position="left" theme="light"/>
+            <Sidebar position="left" theme="light" />
+
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center z-[1000] bg-white bg-opacity-75">
+                    <BounceLoader size={50} color={"#4F6F52"} loading={loading} />
+                </div>
+            )}
+
+            {isOffline && <Alert />} {/* Display the Alert component if offline */}
 
             <MapContainer
                 center={[6.673175, -1.565423]}
                 zoom={15}
-                style={{height: "100vh", width: "100%"}}
+                style={{ height: "100vh", width: "100%" }}
+                whenReady={() => setLoading(false)}
             >
                 <LayersControl>
-                    <BaseLayer checked name="OpenStreetMap">
+                    <BaseLayer checked name="Satellite View">
                         <TileLayer
                             url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
                             maxZoom={20}
@@ -67,7 +63,7 @@ walk`);
                         />
                     </BaseLayer>
 
-                    <BaseLayer name="Satellite View">
+                    <BaseLayer name="OpenStreetMap">
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -75,20 +71,13 @@ walk`);
                     </BaseLayer>
 
                     {polylineCoordinates.length > 0 && (
-                        <Polyline
-                            positions={polylineCoordinates}
-                            pathOptions={polylineOptions}
+                        <RenderPolyline
+                            polyline={polylineCoordinates}
+                            lastCoordinate={lastCoordinate}
+                            estimatedDistance={roundedDistance}
                         />
                     )}
 
-                    {lastCoordinate && roundedDistance !== null && (
-                        <Marker icon={markerIcon} draggable position={lastCoordinate}>
-                            <Popup>
-                                Destination <br/>
-                                Distance: {roundedDistance} meters.
-                            </Popup>
-                        </Marker>
-                    )}
                 </LayersControl>
             </MapContainer>
         </div>

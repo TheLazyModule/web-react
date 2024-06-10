@@ -1,7 +1,6 @@
 import {useState, useEffect, useRef} from "react";
 import useSearchText from "@/hooks/useSearchTextFrom.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import ModalComponent from "@/components/ui/modal.tsx";
 import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
 
 const ComboBox = ({type, onSelect}) => {
@@ -9,7 +8,7 @@ const ComboBox = ({type, onSelect}) => {
         type === "from" ? useLocationQueryStore((s) => s.searchTextFrom) : useLocationQueryStore((s) => s.searchTextTo);
     const setSearchText =
         type === "from" ? useLocationQueryStore((s) => s.setSearchTextFrom) : useLocationQueryStore((s) => s.setSearchTextTo);
-    const {data, error, isLoading, isFetched} = type === "from" ? useSearchText() : useSearchTextTo();
+    const {data /*,error*/, isLoading, isFetched} = type === "from" ? useSearchText() : useSearchTextTo();
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -42,7 +41,6 @@ const ComboBox = ({type, onSelect}) => {
 
     return (
         <>
-            {error && <ModalComponent message={error.message}/>}
             <div className="border rounded-xl shadow-sm dark:bg-neutral-800 dark:border-neutral-700">
                 <div className="max-w-sm" ref={dropdownRef}>
                     {/* Search Box */}

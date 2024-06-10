@@ -9,22 +9,28 @@ interface Route {
 
 const apiClient = new APIClient<Route>("/all/route");
 
-
 const useRoute = () => {
     const locationQuery = useLocationQueryStore(s => s.locationQuery);
 
     return useQuery<Route>(
         {
             queryKey: ['route', locationQuery],
-            queryFn: () => apiClient.getAll({
-                params: {
-                    from: locationQuery.from,
-                    to: locationQuery.to,
+            queryFn: () => {
+                if (locationQuery.from && locationQuery.to) {
+                    return apiClient.getAll({
+                        params: {
+                            from: locationQuery.from,
+                            to: locationQuery.to
+                        }
+                    });
                 }
-            }),
+                return Promise.resolve({distance: 0, paths: []}); // Return an empty Route object if condition not met
+            },
             staleTime: 0,
-            retry: 2
-        })
+            retry: 2,
+            enabled: !!locationQuery.from && !!locationQuery.to // Corrected 'enable' to 'enabled'
+        }
+    );
 };
 
 export default useRoute;
