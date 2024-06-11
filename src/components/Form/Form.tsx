@@ -14,7 +14,7 @@ interface IFormInput {
 function Form() {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
-    const {register, handleSubmit, setValue, formState: {errors}} = useForm<IFormInput>();
+    const {register, handleSubmit,  formState: {errors}} = useForm<IFormInput>();
 
 
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
