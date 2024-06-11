@@ -9,6 +9,7 @@ const UsePolyline = () => {
 
     let polylineCoordinates: LatLngExpression[] = [];
     let lastCoordinate: LatLngExpression | null = null;
+    let firstCoordinate: LatLngExpression | null = null;
     let roundedDistance: number | null = null;
 
     if (data && data.paths) {
@@ -27,12 +28,13 @@ const UsePolyline = () => {
 
         // Set the last coordinate and round the distance
         lastCoordinate = polylineCoordinates.length > 0 ? polylineCoordinates[polylineCoordinates.length - 1] : null;
+        firstCoordinate = polylineCoordinates.length > 0 ? polylineCoordinates[0] : null;
+
         roundedDistance = data.distance ? Math.round(data.distance) : null;
 
-        console.log("Polyline Coordinates:", polylineCoordinates);
-        console.log(`Approximately, ${roundedDistance}m walk`);
     }
-    return {polylineCoordinates, isLoading, roundedDistance, lastCoordinate}
+    return {polylineCoordinates, isLoading, roundedDistance, firstCoordinate,lastCoordinate}
+
 };
 
 export default UsePolyline;

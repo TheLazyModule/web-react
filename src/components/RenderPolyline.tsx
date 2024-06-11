@@ -1,39 +1,31 @@
-import { useEffect } from 'react';
-import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
-import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet';
+import {useEffect} from 'react';
+import {Marker, Polyline, Popup, useMap} from 'react-leaflet';
+import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
-import marker from "@/assets/location.svg";
+import {markerIconGreen, markerIconRed} from "@/constants/constants.ts";
 
 interface RenderPolylineProps {
     polyline: LatLngExpression[];
+    firstCoordinate: LatLngLiteral | LatLngTuple | null;
     lastCoordinate: LatLngLiteral | LatLngTuple | null;
     estimatedDistance: number | null;
 }
 
-const polylineOptions = { color: "#077bd1db", weight: 6 };
+const polylineOptions = {color: "#077bd1db", weight: 6};
 
-const markerIcon = new L.Icon({
-    iconUrl: marker,
-    iconRetinaUrl: marker,
-    popupAnchor: [-0, -0],
-    iconSize: [32, 45],
-});
 
-const RenderPolyline = ({ polyline, lastCoordinate, estimatedDistance }: RenderPolylineProps) => {
+const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
     const map = useMap();
     const flyToDuration = 1.5;
 
     const flyTo = (location: LatLngTuple) => {
-        map.flyTo(location, 15, {
-            animate: true,
-            duration: flyToDuration,
-        });
+        map.flyTo([...location], 14)
     };
 
     useEffect(() => {
         if (polyline.length > 0) {
             const bounds = L.latLngBounds(polyline);
-            map.flyToBounds(bounds, { animate: true, duration: flyToDuration });
+            map.flyToBounds(bounds, {animate: true, duration: flyToDuration});
         }
     }, [polyline, map]);
 
@@ -63,14 +55,22 @@ const RenderPolyline = ({ polyline, lastCoordinate, estimatedDistance }: RenderP
     return (
         <>
             {lastCoordinate && estimatedDistance !== null && (
-                <Marker icon={markerIcon} draggable position={lastCoordinate}>
+                <Marker icon={markerIconRed} draggable position={lastCoordinate}>
                     <Popup>
-                        Destination <br />
+                        Destination <br/>
                         Distance: {estimatedDistance} meters.
                     </Popup>
                 </Marker>
             )}
-            <Polyline positions={polyline} pathOptions={polylineOptions} />
+
+            {firstCoordinate && estimatedDistance !== null && (
+                <Marker icon={markerIconGreen} draggable position={firstCoordinate}>
+                    <Popup>
+                        I am here!
+                    </Popup>
+                </Marker>
+            )}
+            <Polyline positions={polyline} pathOptions={polylineOptions}/>
         </>
     );
 };

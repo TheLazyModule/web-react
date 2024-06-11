@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import {Marker, Popup, useMapEvents} from 'react-leaflet';
-import L, {LatLngExpression} from 'leaflet';
+import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
 import marker from '@/assets/location_green.png';
 import useLocationQueryStore from '@/hooks/useLocationStore.ts';
 import {LayersControl, MapContainer, TileLayer} from "react-leaflet";
@@ -9,10 +9,11 @@ import Sidebar from "../Sidebar/Sidebar.tsx";
 import {BounceLoader} from "react-spinners";
 import usePolyline from "@/hooks/usePolyline.tsx";
 import RenderPolyline from "@/components/RenderPolyline.tsx";
-import Alert from "@/components/Alert"; // Import the Alert component
+import Alert from "@/components/Alert";
+import toast from "react-hot-toast"; // Import the Alert component
 
 const MapView = () => {
-    const {polylineCoordinates, isLoading, roundedDistance, lastCoordinate} = usePolyline();
+    const {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate} = usePolyline();
     const [loading, setLoading] = useState(true);
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
@@ -50,7 +51,7 @@ const MapView = () => {
                 </div>
             )}
 
-            {isOffline && <Alert/>} {/* Display the Alert component if offline */}
+            {isOffline && toast.error("It seems you're offline")} {/* Display the Alert component if offline */}
 
             <MapContainer
                 center={[6.673175, -1.565423]}
@@ -77,12 +78,13 @@ const MapView = () => {
                     {polylineCoordinates.length > 0 && (
                         <RenderPolyline
                             polyline={polylineCoordinates}
+                            firstCoordinate={firstCoordinate}
                             lastCoordinate={lastCoordinate}
                             estimatedDistance={roundedDistance}
                         />
                     )}
 
-                    <ClickMarker/> {/* Add the ClickMarker component */}
+                    <ClickMarker firstCoordinate={firstCoordinate}/> {/* Add the ClickMarker component */}
                 </LayersControl>
             </MapContainer>
         </div>
@@ -97,7 +99,7 @@ const markerIcon = new L.Icon({
     iconSize: [45, 45],
 });
 
-const ClickMarker = () => {
+const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLngTuple | null; }) => {
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
     const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
     const setFrom = useLocationQueryStore((s) => s.setFrom);
@@ -105,6 +107,7 @@ const ClickMarker = () => {
 
     useMapEvents({
         click(e) {
+            toast.error("Toasted!")
             const newLocation = `POINT(${e.latlng.lng} ${e.latlng.lat})`;
             setMarkerPosition(e.latlng);
             setFromLocation(newLocation);
@@ -124,7 +127,7 @@ const ClickMarker = () => {
         setFrom('My Location');
     };
 
-    return markerPosition ? (
+    return markerPosition && !firstCoordinate ? (
         <Marker
             icon={markerIcon}
             draggable

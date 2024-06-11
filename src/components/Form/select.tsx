@@ -30,8 +30,11 @@ const ComboBox = ({type}) => {
         setSearchText(value);
         if (type === "from" && fromLocation) {
             setFrom(value)
+        } else if  (type === "from")  {
+            setFrom(value)
         } else {
             setTo(value)
+
         }
         setDropdownVisible(false);
     };

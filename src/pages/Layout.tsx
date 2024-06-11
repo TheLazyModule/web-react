@@ -3,6 +3,7 @@ import Footer from "@/components/Footer/Footer.tsx";
 import NavBar from "@/components/NavBar/NavBar.tsx";
 import {Outlet, useLocation} from "react-router-dom";
 import LoadingIndicator from '@/components/LoadingIndicator';
+import {Toaster} from "react-hot-toast";
 
 const Layout = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -25,6 +26,16 @@ const Layout = () => {
     // Render your layout content once loading is complete
     return (
         <div className={`${currentLocation === 'contact' ? 'bg-[#F5EFE6]' : ''}`}>
+            <Toaster position="top-right"
+                     reverseOrder={false}
+                     toastOptions={{
+                         style: {
+                             paddingInline: 30,
+                             paddingBlock: 20
+                         }
+
+                     }}
+            />
             <NavBar/>
             <Outlet/>
             <Footer/>
