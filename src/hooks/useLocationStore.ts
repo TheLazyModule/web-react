@@ -2,6 +2,7 @@ import {create} from 'zustand'
 
 export interface LocationQuery {
     from?: string;
+    from_location?: string;
     to?: string;
 }
 
@@ -17,6 +18,7 @@ export interface LocationQueryStore {
     searchTextTo?: string;
     locationName?: string;
     setFrom: (from: string) => void;
+    setFromLocation: (from_location: string) => void;
     setTo: (to: string) => void;
     setSearchTextFrom: (searchText: string) => void;
     setSearchTextTo: (searchText: string) => void;
@@ -25,11 +27,17 @@ export interface LocationQueryStore {
 
 
 const useLocationQueryStore = create<LocationQueryStore>((set) => ({
-    locationQuery: {from: '', to: ''},
+    locationQuery: {from: '', to: '', from_location: ''},
     searchTextFrom: '',
     searchTextTo: '',
     locationName: '',
     setFrom: (from: string) => set((store) => ({locationQuery: {...store.locationQuery, from}})),
+    setFromLocation: (from_location?: string) => set((store) => ({
+        locationQuery: {
+            ...store.locationQuery,
+            from_location
+        }
+    })),
     setTo: (to: string) => set((store) => ({locationQuery: {...store.locationQuery, to}})),
     setSearchTextFrom: (searchTextFrom: string) => set((store) => ({...store, searchTextFrom})),
     setSearchTextTo: (searchTextTo: string) => set((store) => ({...store, searchTextTo})),

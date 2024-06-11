@@ -2,8 +2,14 @@ import {useState, useEffect, useRef} from "react";
 import useSearchText from "@/hooks/useSearchTextFrom.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
+import {UserLocation} from "@/constants/constants.ts";
 
-const ComboBox = ({type, onSelect}) => {
+const ComboBox = ({type}) => {
+    const setFrom = useLocationQueryStore(s => s.setFrom);
+    const setTo = useLocationQueryStore(s => s.setTo);
+
+    const fromLocation = useLocationQueryStore(s => s.locationQuery.from_location);
+    const setFromLocation = useLocationQueryStore(s => s.setFromLocation);
     const searchText =
         type === "from" ? useLocationQueryStore((s) => s.searchTextFrom) : useLocationQueryStore((s) => s.searchTextTo);
     const setSearchText =
@@ -14,14 +20,28 @@ const ComboBox = ({type, onSelect}) => {
     const dropdownRef = useRef<HTMLDivElement | null>(null);
 
 
+    useEffect(() => {
+        if (type === "from" && fromLocation) {
+            setSearchText(UserLocation);
+        }
+    })
+
     const handleOptionSelect = (value) => {
         setSearchText(value);
+        if (type === "from" && fromLocation) {
+            setFrom(value)
+        } else {
+            setTo(value)
+        }
         setDropdownVisible(false);
-        onSelect(value); // Notify the parent form about the selection
     };
 
     const handleSearchChange = (e) => {
+        if (type === "from" && fromLocation) {
+            setFromLocation("");
+        }
         setSearchText(e.target.value);
+
         setDropdownVisible(true);
     };
 
@@ -90,7 +110,7 @@ const ComboBox = ({type, onSelect}) => {
                         </div>
                     )}
 
-                    {searchText && isLoading && (
+                    {searchText && searchText !== UserLocation && isLoading && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
@@ -104,7 +124,7 @@ const ComboBox = ({type, onSelect}) => {
                         </div>
                     )}
 
-                    {searchText && data && data?.length === 0 && (
+                    {searchText && searchText !== UserLocation && data && data?.length === 0 && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">

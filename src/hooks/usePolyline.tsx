@@ -32,7 +32,7 @@ const UsePolyline = () => {
         console.log("Polyline Coordinates:", polylineCoordinates);
         console.log(`Approximately, ${roundedDistance}m walk`);
     }
-    return { polylineCoordinates,isLoading, roundedDistance, lastCoordinate }
+    return {polylineCoordinates, isLoading, roundedDistance, lastCoordinate}
 };
 
 export default UsePolyline;

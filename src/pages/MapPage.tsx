@@ -4,7 +4,6 @@ const MapPage = () => {
     return (
         <div>
             <MapView/>
-
         </div>
     );
 };

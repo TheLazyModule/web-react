@@ -1,6 +1,6 @@
-import {useEffect} from 'react';
-import {Marker, Polyline, Popup, useMap} from 'react-leaflet';
-import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
+import { useEffect } from 'react';
+import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
+import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
 import marker from "@/assets/location.svg";
 
@@ -10,7 +10,7 @@ interface RenderPolylineProps {
     estimatedDistance: number | null;
 }
 
-const polylineOptions = {color: "#077bd1db", weight: 6};
+const polylineOptions = { color: "#077bd1db", weight: 6 };
 
 const markerIcon = new L.Icon({
     iconUrl: marker,
@@ -19,7 +19,7 @@ const markerIcon = new L.Icon({
     iconSize: [32, 45],
 });
 
-const RenderPolyline = ({polyline, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
+const RenderPolyline = ({ polyline, lastCoordinate, estimatedDistance }: RenderPolylineProps) => {
     const map = useMap();
     const flyToDuration = 1.5;
 
@@ -33,8 +33,7 @@ const RenderPolyline = ({polyline, lastCoordinate, estimatedDistance}: RenderPol
     useEffect(() => {
         if (polyline.length > 0) {
             const bounds = L.latLngBounds(polyline);
-            map.flyToBounds(bounds, {animate: true, duration: flyToDuration});
-            map.panTo(lastCoordinate as LatLngExpression, {animate: true, duration: flyToDuration})
+            map.flyToBounds(bounds, { animate: true, duration: flyToDuration });
         }
     }, [polyline, map]);
 
@@ -52,12 +51,10 @@ const RenderPolyline = ({polyline, lastCoordinate, estimatedDistance}: RenderPol
                     // @ts-ignore
                     layer.bounce();
                     // @ts-ignore
-                    setTimeout(()=> layer.stopBouncing(), 3000)
-                    
+                    setTimeout(() => layer.stopBouncing(), 3000);
                 } else {
                     // @ts-ignore
                     layer.stopBouncing();
-
                 }
             }
         });
@@ -68,12 +65,12 @@ const RenderPolyline = ({polyline, lastCoordinate, estimatedDistance}: RenderPol
             {lastCoordinate && estimatedDistance !== null && (
                 <Marker icon={markerIcon} draggable position={lastCoordinate}>
                     <Popup>
-                        Destination <br/>
+                        Destination <br />
                         Distance: {estimatedDistance} meters.
                     </Popup>
                 </Marker>
             )}
-            <Polyline positions={polyline} pathOptions={polylineOptions}/>
+            <Polyline positions={polyline} pathOptions={polylineOptions} />
         </>
     );
 };

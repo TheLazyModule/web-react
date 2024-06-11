@@ -20,6 +20,7 @@ const useRoute = () => {
                     return apiClient.getAll({
                         params: {
                             from: locationQuery.from,
+                            from_location: locationQuery.from_location,
                             to: locationQuery.to
                         }
                     });
