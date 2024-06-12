@@ -50,7 +50,8 @@ const Searchbar = () => {
 
     return (
         <>
-            <div className="absolute  z-[1000000] left-[5.4rem] md:left-[30rem] top-[15px] border rounded-xl p-1 w-[14rem] md:w-[30rem] bg-white shadow-sm">
+            <div
+                className="absolute  z-[1000000] left-[5.4rem] md:left-[30rem] top-[15px] border rounded-xl p-1 w-[14rem] md:w-[30rem] bg-white shadow-sm">
                 <div className="max-w-lg" ref={dropdownRef}>
                     {/* Search Box */}
                     <div className="relative">
@@ -115,7 +116,7 @@ const Searchbar = () => {
                         </div>
                     )}
 
-                    {locationName && !data && (
+                    {locationName && locationName.length >= 2 && !data && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">

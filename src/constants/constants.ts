@@ -14,7 +14,7 @@ export const markerIconRed = new L.Icon({
 
 export const markerIconGreen = new L.Icon({
     iconUrl: markerGreen,
-    iconRetinaUrl: marker,
+    iconRetinaUrl: markerGreen,
     popupAnchor: [-0, -0],
     iconSize: [32, 32],
 
