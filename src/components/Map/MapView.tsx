@@ -1,21 +1,67 @@
 import {useState, useEffect} from "react";
-import {Marker, Popup, useMapEvents} from 'react-leaflet';
-import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
-import marker from '@/assets/location_green.png';
-import useLocationQueryStore from '@/hooks/useLocationStore.ts';
-import {LayersControl, MapContainer, TileLayer} from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import {Marker, Popup, useMapEvents, LayersControl, MapContainer, TileLayer} from "react-leaflet";
+import {LatLngExpression, LatLngLiteral, LatLngTuple} from "leaflet";
+import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import Sidebar from "../Sidebar/Sidebar.tsx";
 import {BounceLoader} from "react-spinners";
 import usePolyline from "@/hooks/usePolyline.tsx";
 import RenderPolyline from "@/components/RenderPolyline.tsx";
-import Alert from "@/components/Alert";
-import toast from "react-hot-toast"; // Import the Alert component
+import toast from "react-hot-toast";
+import "leaflet/dist/leaflet.css";
+import {markerIconGreen} from "@/constants/constants.ts";
+
+
+const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLngTuple | null; }) => {
+    const locationQuery = useLocationQueryStore((s) => s.locationQuery);
+    const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
+    const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
+    const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
+    const setFrom = useLocationQueryStore((s) => s.setFrom);
+
+    useMapEvents({
+        click(e) {
+            const newLocation = `POINT(${e.latlng.lng} ${e.latlng.lat})`;
+            setUserMarkerLocation(e.latlng);
+            setFromLocation(newLocation);
+            setFrom('My Location');
+        },
+    });
+
+    useEffect(() => {
+        console.log(locationQuery);
+    }, [locationQuery]);
+
+    useEffect(() => {
+        if (firstCoordinate) {
+            setUserMarkerLocation(firstCoordinate);
+        }
+    }, [firstCoordinate]);
+
+    const handleMarkerDragEnd = (event) => {
+        const latlng = event.target.getLatLng();
+        const newLocation = `POINT(${latlng.lng} ${latlng.lat})`;
+        setUserMarkerLocation(latlng);
+        setFromLocation(newLocation);
+        setFrom('My Location');
+    };
+
+    return userMarkerLocation ? (
+        <Marker
+            icon={markerIconGreen}
+            draggable
+            position={userMarkerLocation as LatLngExpression}
+            eventHandlers={{dragend: handleMarkerDragEnd}}
+        >
+            <Popup>I'm here!</Popup>
+        </Marker>
+    ) : null;
+};
 
 const MapView = () => {
     const {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate} = usePolyline();
     const [loading, setLoading] = useState(true);
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
 
     useEffect(() => {
         setLoading(isLoading);
@@ -39,6 +85,11 @@ const MapView = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (isOffline)
+            toast.error("It seems you're offline");
+    }, [isOffline]);
+
     const {BaseLayer} = LayersControl;
 
     return (
@@ -50,8 +101,6 @@ const MapView = () => {
                     <BounceLoader size={50} color={"#4F6F52"} loading={loading}/>
                 </div>
             )}
-
-            {isOffline && toast.error("It seems you're offline")} {/* Display the Alert component if offline */}
 
             <MapContainer
                 center={[6.673175, -1.565423]}
@@ -84,59 +133,11 @@ const MapView = () => {
                         />
                     )}
 
-                    <ClickMarker firstCoordinate={firstCoordinate}/> {/* Add the ClickMarker component */}
+                    <ClickMarker firstCoordinate={firstCoordinate}/>
                 </LayersControl>
             </MapContainer>
         </div>
     );
-};
-
-
-const markerIcon = new L.Icon({
-    iconUrl: marker,
-    iconRetinaUrl: marker,
-    popupAnchor: [-0, -0],
-    iconSize: [45, 45],
-});
-
-const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLngTuple | null; }) => {
-    const locationQuery = useLocationQueryStore((s) => s.locationQuery);
-    const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
-    const setFrom = useLocationQueryStore((s) => s.setFrom);
-    const [markerPosition, setMarkerPosition] = useState<LatLngExpression | null>(null);
-
-    useMapEvents({
-        click(e) {
-            toast.error("Toasted!")
-            const newLocation = `POINT(${e.latlng.lng} ${e.latlng.lat})`;
-            setMarkerPosition(e.latlng);
-            setFromLocation(newLocation);
-            setFrom('My Location');
-        },
-    });
-
-    useEffect(() => {
-        console.log(locationQuery);
-    }, [locationQuery]);
-
-    const handleMarkerDragEnd = (event) => {
-        const latlng = event.target.getLatLng();
-        const newLocation = `POINT(${latlng.lng} ${latlng.lat})`;
-        setMarkerPosition(latlng);
-        setFromLocation(newLocation);
-        setFrom('My Location');
-    };
-
-    return markerPosition && !firstCoordinate ? (
-        <Marker
-            icon={markerIcon}
-            draggable
-            position={markerPosition}
-            eventHandlers={{dragend: handleMarkerDragEnd}}
-        >
-            <Popup>I'm here!</Popup>
-        </Marker>
-    ) : null;
 };
 
 export default MapView;

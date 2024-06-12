@@ -23,7 +23,7 @@ const Layout = () => {
         return <LoadingIndicator/>;
     }
 
-    // Render your layout content once loading is complete
+    // Render  layout content once loading is complete
     return (
         <div className={`${currentLocation === 'contact' ? 'bg-[#F5EFE6]' : ''}`}>
             <Toaster position="top-right"
@@ -31,7 +31,8 @@ const Layout = () => {
                      toastOptions={{
                          style: {
                              paddingInline: 30,
-                             paddingBlock: 20
+                             paddingBlock: 20,
+                             zIndex: 1000000000
                          }
 
                      }}

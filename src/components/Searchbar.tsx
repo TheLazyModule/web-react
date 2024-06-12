@@ -6,7 +6,7 @@ import {UserLocation} from "@/constants/constants.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
 
-const ComboBox = ({type}) => {
+const Searchbar  = ({type}) => {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
     const locationQuery = useLocationQueryStore(s => s.locationQuery);
@@ -167,4 +167,4 @@ const ComboBox = ({type}) => {
     );
 };
 
-export default ComboBox;
+export default Searchbar;

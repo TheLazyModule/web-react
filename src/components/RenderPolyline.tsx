@@ -1,76 +1,73 @@
-import {useEffect} from 'react';
-import {Marker, Polyline, Popup, useMap} from 'react-leaflet';
-import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
+import { useEffect } from 'react';
+import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
+import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
-import {markerIconGreen, markerIconRed} from "@/constants/constants.ts";
+import { markerIconRed } from "@/constants/constants.ts";
+import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 
 interface RenderPolylineProps {
     polyline: LatLngExpression[];
-    firstCoordinate: LatLngLiteral | LatLngTuple | null;
     lastCoordinate: LatLngLiteral | LatLngTuple | null;
+    firstCoordinate: LatLngLiteral | LatLngTuple | null;
     estimatedDistance: number | null;
 }
 
-const polylineOptions = {color: "#077bd1db", weight: 6};
+const polylineOptions = { color: "#077bd1db", weight: 6 };
+const dottedPolylineOptions = { color: "#077bd1db", weight: 2, dashArray: '5, 10' };
 
-
-const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
+const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDistance }: RenderPolylineProps) => {
+    const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const map = useMap();
     const flyToDuration = 1.5;
 
-    const flyTo = (location: LatLngTuple) => {
-        map.flyTo([...location], 14)
-    };
-
     useEffect(() => {
-        if (polyline.length > 0) {
-            const bounds = L.latLngBounds(polyline);
-            map.flyToBounds(bounds, {animate: true, duration: flyToDuration});
+        if (polyline.length > 0 && lastCoordinate) {
+            map.flyTo([lastCoordinate[0], lastCoordinate[1]], 18);
         }
-    }, [polyline, map]);
+    }, [lastCoordinate, firstCoordinate, map, polyline]);
 
     useEffect(() => {
         if (lastCoordinate) {
-            flyTo(lastCoordinate as LatLngTuple);
-        }
-    }, [lastCoordinate]);
-
-    useEffect(() => {
-        map.eachLayer(async (layer) => {
-            if (layer instanceof L.Marker) {
-                if (layer.getLatLng().equals(lastCoordinate as LatLngLiteral)) {
-                    await new Promise((r) => setTimeout(r, flyToDuration * 1000 + 100));
-                    // @ts-ignore
-                    layer.bounce();
-                    // @ts-ignore
-                    setTimeout(() => layer.stopBouncing(), 3000);
-                } else {
-                    // @ts-ignore
-                    layer.stopBouncing();
+            map.eachLayer(async (layer) => {
+                if (layer instanceof L.Marker) {
+                    if (layer.getLatLng().equals(lastCoordinate)) {
+                        await new Promise((r) => setTimeout(r, flyToDuration * 1000 + 100));
+                        // @ts-ignore
+                        layer.bounce();
+                        // @ts-ignore
+                        setTimeout(() => layer.stopBouncing(), 3000);
+                    } else {
+                        // @ts-ignore
+                        layer.stopBouncing();
+                    }
                 }
-            }
-        });
+            });
+        }
     }, [lastCoordinate, map]);
+
+    const getDottedPolyline = () => {
+        if (firstCoordinate && userMarkerLocation) {
+            return [firstCoordinate, userMarkerLocation];
+        }
+        return null;
+    };
 
     return (
         <>
             {lastCoordinate && estimatedDistance !== null && (
                 <Marker icon={markerIconRed} draggable position={lastCoordinate}>
                     <Popup>
-                        Destination <br/>
+                        Destination <br />
                         Distance: {estimatedDistance} meters.
                     </Popup>
                 </Marker>
             )}
 
-            {firstCoordinate && estimatedDistance !== null && (
-                <Marker icon={markerIconGreen} draggable position={firstCoordinate}>
-                    <Popup>
-                        I am here!
-                    </Popup>
-                </Marker>
+            <Polyline positions={polyline} pathOptions={polylineOptions} />
+
+            {getDottedPolyline() && (
+                <Polyline positions={getDottedPolyline() as LatLngExpression[]} pathOptions={dottedPolylineOptions} />
             )}
-            <Polyline positions={polyline} pathOptions={polylineOptions}/>
         </>
     );
 };

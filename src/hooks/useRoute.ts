@@ -12,6 +12,8 @@ const apiClient = new APIClient<Route>("/all/route");
 const useRoute = () => {
     const locationQuery = useLocationQueryStore(s => s.locationQuery);
 
+    const enabled = !!locationQuery.from && !!locationQuery.to && (locationQuery.from !== locationQuery.to);
+
     return useQuery<Route>(
         {
             queryKey: ['route', locationQuery],
@@ -29,7 +31,7 @@ const useRoute = () => {
             },
             staleTime: 0,
             retry: 2,
-            enabled: !!locationQuery.from && !!locationQuery.to // Corrected 'enable' to 'enabled'
+            enabled: enabled
         }
     );
 };

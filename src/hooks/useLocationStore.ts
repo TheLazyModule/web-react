@@ -1,4 +1,5 @@
 import {create} from 'zustand'
+import {LatLngExpression} from "leaflet";
 
 export interface LocationQuery {
     from?: string;
@@ -17,12 +18,14 @@ export interface LocationQueryStore {
     searchTextFrom?: string;
     searchTextTo?: string;
     locationName?: string;
+    userMarkerLocation?: LatLngExpression | null;
     setFrom: (from: string) => void;
     setFromLocation: (from_location: string) => void;
     setTo: (to: string) => void;
     setSearchTextFrom: (searchText: string) => void;
     setSearchTextTo: (searchText: string) => void;
     setLocation: (location?: string) => void;
+    setUserMarkerLocation: (location: LatLngExpression | null) => void
 }
 
 
@@ -31,6 +34,7 @@ const useLocationQueryStore = create<LocationQueryStore>((set) => ({
     searchTextFrom: '',
     searchTextTo: '',
     locationName: '',
+    userMarkerLocation: null,
     setFrom: (from: string) => set((store) => ({locationQuery: {...store.locationQuery, from}})),
     setFromLocation: (from_location?: string) => set((store) => ({
         locationQuery: {
@@ -41,7 +45,11 @@ const useLocationQueryStore = create<LocationQueryStore>((set) => ({
     setTo: (to: string) => set((store) => ({locationQuery: {...store.locationQuery, to}})),
     setSearchTextFrom: (searchTextFrom: string) => set((store) => ({...store, searchTextFrom})),
     setSearchTextTo: (searchTextTo: string) => set((store) => ({...store, searchTextTo})),
-    setLocation: (locationName?: string) => set((store) => ({...store, locationName}))
+    setLocation: (locationName?: string) => set((store) => ({...store, locationName})),
+    setUserMarkerLocation: (userMarkerLocation?: LatLngExpression | null) => set((store) => ({
+        ...store,
+        userMarkerLocation
+    }))
 }))
 
 export default useLocationQueryStore;
