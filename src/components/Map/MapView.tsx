@@ -1,61 +1,14 @@
 import {useState, useEffect} from "react";
-import {Marker, Popup, useMapEvents, LayersControl, MapContainer, TileLayer} from "react-leaflet";
-import {LatLngExpression, LatLngLiteral, LatLngTuple} from "leaflet";
-import useLocationQueryStore from "@/hooks/useLocationStore.ts";
+import {LayersControl, MapContainer, TileLayer} from "react-leaflet";
 import Sidebar from "../Sidebar/Sidebar.tsx";
 import {BounceLoader} from "react-spinners";
 import usePolyline from "@/hooks/usePolyline.tsx";
 import RenderPolyline from "@/components/RenderPolyline.tsx";
 import toast from "react-hot-toast";
 import "leaflet/dist/leaflet.css";
-import {markerIconGreen} from "@/constants/constants.ts";
+import ClickMarker from "@/components/ClickMarker.tsx";
+import Searchbar from "@/components/Searchbar.tsx";
 
-
-const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLngTuple | null; }) => {
-    const locationQuery = useLocationQueryStore((s) => s.locationQuery);
-    const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
-    const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
-    const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
-    const setFrom = useLocationQueryStore((s) => s.setFrom);
-
-    useMapEvents({
-        click(e) {
-            const newLocation = `POINT(${e.latlng.lng} ${e.latlng.lat})`;
-            setUserMarkerLocation(e.latlng);
-            setFromLocation(newLocation);
-            setFrom('My Location');
-        },
-    });
-
-    useEffect(() => {
-        console.log(locationQuery);
-    }, [locationQuery]);
-
-    useEffect(() => {
-        if (firstCoordinate) {
-            setUserMarkerLocation(firstCoordinate);
-        }
-    }, [firstCoordinate]);
-
-    const handleMarkerDragEnd = (event) => {
-        const latlng = event.target.getLatLng();
-        const newLocation = `POINT(${latlng.lng} ${latlng.lat})`;
-        setUserMarkerLocation(latlng);
-        setFromLocation(newLocation);
-        setFrom('My Location');
-    };
-
-    return userMarkerLocation ? (
-        <Marker
-            icon={markerIconGreen}
-            draggable
-            position={userMarkerLocation as LatLngExpression}
-            eventHandlers={{dragend: handleMarkerDragEnd}}
-        >
-            <Popup>I'm here!</Popup>
-        </Marker>
-    ) : null;
-};
 
 const MapView = () => {
     const {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate} = usePolyline();
@@ -94,6 +47,7 @@ const MapView = () => {
 
     return (
         <div className="relative">
+            <Searchbar/>
             <Sidebar position="left" theme="light"/>
 
             {loading && (

@@ -1,23 +1,15 @@
 import {useState, useEffect, useRef} from "react";
-import useSearchText from "@/hooks/useSearchTextFrom.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
-import {UserLocation} from "@/constants/constants.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
+import useLocation from "@/hooks/useLocation.ts";
 
-const Searchbar  = ({type}) => {
-    const setFrom = useLocationQueryStore(s => s.setFrom);
-    const setTo = useLocationQueryStore(s => s.setTo);
-    const locationQuery = useLocationQueryStore(s => s.locationQuery);
+const Searchbar = () => {
+    const locationName = useLocationQueryStore(s => s.locationName);
+    const setLocationName = useLocationQueryStore(s => s.setLocation);
 
-    const fromLocation = useLocationQueryStore(s => s.locationQuery.from_location);
-    const setFromLocation = useLocationQueryStore(s => s.setFromLocation);
-    const searchText =
-        type === "from" ? useLocationQueryStore((s) => s.searchTextFrom) : useLocationQueryStore((s) => s.searchTextTo);
-    const setSearchText =
-        type === "from" ? useLocationQueryStore((s) => s.setSearchTextFrom) : useLocationQueryStore((s) => s.setSearchTextTo);
-    const {data /*,error*/, isLoading, isFetched, error} = type === "from" ? useSearchText() : useSearchTextTo();
+    const {data /*,error*/, isLoading, isFetched, error} = useLocation();
+
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -25,44 +17,19 @@ const Searchbar  = ({type}) => {
 
     useEffect(() => {
         if (error) {
-            toast.error("Failed to fetch data. Please check your internet connection.");
+            toast.error("Location not Found!");
         }
     }, [isFetched, error]);
 
-    useEffect(() => {
-        if (locationQuery.from && locationQuery.to && locationQuery.from === locationQuery.to)
-            toast.error("Location and Destination cannot be the same");
-    }, [locationQuery]);
-
-    useEffect(() => {
-        if (type === "from" && fromLocation) {
-            setSearchText(UserLocation);
-        }
-    })
 
     const handleOptionSelect = (value) => {
-        setSearchText(value);
-        if (type === "from" && fromLocation) {
-            setFrom(value)
-        } else if (type === "from") {
-            setFrom(value)
-        } else {
-            setTo(value)
+        setLocationName(value);
 
-        }
         setDropdownVisible(false);
     };
 
     const handleSearchChange = (e) => {
-        if (type === "from" && fromLocation) {
-            setFromLocation("");
-        }
-        if (type === "from") {
-            setFrom("")
-        } else {
-            setTo("")
-        }
-        setSearchText(e.target.value);
+        setLocationName(e.target.value);
 
         setDropdownVisible(true);
     };
@@ -83,8 +50,8 @@ const Searchbar  = ({type}) => {
 
     return (
         <>
-            <div className="border rounded-xl shadow-sm dark:bg-neutral-800 dark:border-neutral-700">
-                <div className="max-w-sm" ref={dropdownRef}>
+            <div className="absolute  z-[1000000] left-[5.4rem] md:left-[30rem] top-[15px] border rounded-xl p-1 w-[14rem] md:w-[30rem] bg-white shadow-sm">
+                <div className="max-w-lg" ref={dropdownRef}>
                     {/* Search Box */}
                     <div className="relative">
                         <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-3.5">
@@ -108,12 +75,12 @@ const Searchbar  = ({type}) => {
                             className="py-3 ps-10 pe-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                             type="text"
                             placeholder="Type your location"
-                            value={searchText}
+                            value={locationName}
                             onChange={handleSearchChange}
                         />
                     </div>
 
-                    {dropdownVisible && isFetched && searchText && searchText.length >= 2 && (
+                    {dropdownVisible && isFetched && locationName && locationName.length >= 2 && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
@@ -132,7 +99,7 @@ const Searchbar  = ({type}) => {
                         </div>
                     )}
 
-                    {searchText && searchText !== UserLocation && isLoading && (
+                    {locationName && isLoading && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
@@ -148,7 +115,7 @@ const Searchbar  = ({type}) => {
                         </div>
                     )}
 
-                    {searchText && searchText !== UserLocation && data && data?.length === 0 && (
+                    {locationName && !data && (
                         <div
                             className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">

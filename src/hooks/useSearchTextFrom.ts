@@ -25,7 +25,7 @@ const UseSearchTextFrom = () => {
             }
             return Promise.resolve([]); // Return an empty array if condition not met
         },
-        staleTime: ms('10m'),
+        staleTime: ms('60d'),
         retry: 5,
         enabled: !!searchTextFrom && searchTextFrom.length >= 2 // Ensure this is a boolean
     });
