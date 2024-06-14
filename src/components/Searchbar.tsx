@@ -6,6 +6,10 @@ import useLocation from "@/hooks/useLocation.ts";
 import {Option} from "@/constants/constants";
 
 const Searchbar = () => {
+    const setTo = useLocationQueryStore(s => s.setTo);
+    const setFrom = useLocationQueryStore(s => s.setFrom);
+    const setSearchTextTo = useLocationQueryStore(s => s.setSearchTextTo);
+    const setSearchTextFrom = useLocationQueryStore(s => s.setSearchTextFrom);
     const locationName = useLocationQueryStore(s => s.location?.name);
     const location = useLocationQueryStore((s) => s.location);
     const setLocationName = useLocationQueryStore(s => s.setLocationName);
@@ -26,6 +30,10 @@ const Searchbar = () => {
 
 
     const handleOptionSelect = (value: Option) => {
+        setTo('')
+        setFrom('')
+        setSearchTextTo('')
+        setSearchTextFrom('')
         setLocationName(value.name);
 
         console.log(location);

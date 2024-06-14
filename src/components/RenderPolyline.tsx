@@ -12,16 +12,18 @@ interface RenderPolylineProps {
     estimatedDistance: number | null;
 }
 
-const polylineOptions = {color: "#077bd1db", weight: 6};
-const dottedPolylineOptions = {color: "#077bd1db", weight: 2, dashArray: '5, 10'};
+const polylineOptions = {color: "#077bd1db", weight: 9};
+const dottedPolylineOptions = {color: "#077bd1db", weight: 4, dashArray: '5, 10'};
 
 const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
+    const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const map = useMap();
     const flyToDuration = 1.5;
 
     useEffect(() => {
         if (polyline.length > 0 && lastCoordinate) {
+            setUserMarkerLocation(firstCoordinate);
             map.flyTo([lastCoordinate[0], lastCoordinate[1]], 18);
         }
     }, [lastCoordinate, firstCoordinate, map, polyline]);
@@ -44,6 +46,7 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
             });
         }
     }, [lastCoordinate, map]);
+
 
     const getDottedPolyline = () => {
         if (firstCoordinate && userMarkerLocation) {

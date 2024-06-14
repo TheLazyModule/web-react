@@ -27,7 +27,6 @@ const FlyToLocation = ({location}) => {
 const MapView = () => {
     const location = useLocationQueryStore((s) => s.location);
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
-    const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate} = usePolyline();
     const [loading, setLoading] = useState(true);
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -97,7 +96,7 @@ const MapView = () => {
                         />
                     </BaseLayer>
 
-                    {parsedLocation && !locationQuery.from && !locationQuery.to && !userMarkerLocation && (
+                    {parsedLocation && !locationQuery.from && !locationQuery.to && (
                         <>
                             <FlyToLocation location={parsedLocation}/>
                             <Marker icon={markerIconGreen} draggable position={parsedLocation}>
@@ -107,12 +106,15 @@ const MapView = () => {
                     )}
 
                     {polylineCoordinates.length > 0 && (
-                        <RenderPolyline
-                            polyline={polylineCoordinates}
-                            firstCoordinate={firstCoordinate}
-                            lastCoordinate={lastCoordinate}
-                            estimatedDistance={roundedDistance}
-                        />
+                        <>
+                            <RenderPolyline
+                                polyline={polylineCoordinates}
+                                firstCoordinate={firstCoordinate}
+                                lastCoordinate={lastCoordinate}
+                                estimatedDistance={roundedDistance}
+                            />
+
+                        </>
                     )}
 
                     <ClickMarker firstCoordinate={firstCoordinate}/>
