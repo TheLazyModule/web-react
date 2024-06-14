@@ -3,10 +3,13 @@ import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
 import useLocation from "@/hooks/useLocation.ts";
+import {Option} from "@/constants/constants";
 
 const Searchbar = () => {
-    const locationName = useLocationQueryStore(s => s.locationName);
-    const setLocationName = useLocationQueryStore(s => s.setLocation);
+    const locationName = useLocationQueryStore(s => s.location?.name);
+    const location = useLocationQueryStore((s) => s.location);
+    const setLocationName = useLocationQueryStore(s => s.setLocationName);
+    const setLocationGeom = useLocationQueryStore(s => s.setLocationGeom);
 
     const {data /*,error*/, isLoading, isFetched, error} = useLocation();
 
@@ -22,8 +25,11 @@ const Searchbar = () => {
     }, [isFetched, error]);
 
 
-    const handleOptionSelect = (value) => {
-        setLocationName(value);
+    const handleOptionSelect = (value: Option) => {
+        setLocationName(value.name);
+
+        console.log(location);
+        setLocationGeom(value.geom);
 
         setDropdownVisible(false);
     };
@@ -88,7 +94,7 @@ const Searchbar = () => {
                                 {data && data?.map((r) => (
                                     <div
                                         key={r.id}
-                                        onClick={() => handleOptionSelect(r.name)}
+                                        onClick={() => handleOptionSelect(r)}
                                         className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
                                     >
                                         <div className="flex justify-between items-center w-full">

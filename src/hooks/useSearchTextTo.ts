@@ -2,13 +2,10 @@ import {useQuery} from "@tanstack/react-query";
 import APIClient from "@/services/apiClient.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import ms from 'ms';
+import {Option} from "@/constants/constants.ts";
 
 const apiClient = new APIClient<Option[]>("/all/search");
 
-export interface Option {
-    id: string;
-    name: string;
-}
 
 const UseSearchTextTo = () => {
     const searchTextTo = useLocationQueryStore(s => s.searchTextTo);

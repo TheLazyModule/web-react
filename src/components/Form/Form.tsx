@@ -39,11 +39,12 @@ function Form() {
                     <div className='items-center'>
                         <IoAccessibility size={25} color='green'/>
                         <IoEllipsisVertical size={18} className='ml-1 mt-3'/>
+                        <IoEllipsisVertical size={18} className='ml-1'/>
                         <IoEllipsisVertical size={18} className='ml-1 mb-3'/>
                         <IoLocationOutline size={25} color='red'/>
                     </div>
                     <div>
-                        <LabelInputContainer className='mb-6 ml-3'>
+                        <LabelInputContainer className='mb-12 ml-3'>
                             <ComboBox type='from'  {...register("from", {required: true})} />
                             {errors.from && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
                         </LabelInputContainer>

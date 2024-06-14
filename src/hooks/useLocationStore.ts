@@ -17,14 +17,15 @@ export interface LocationQueryStore {
     locationQuery: LocationQuery;
     searchTextFrom?: string;
     searchTextTo?: string;
-    locationName?: string;
+    location?: { name?: string, geom?: string }
     userMarkerLocation?: LatLngExpression | null;
     setFrom: (from: string) => void;
     setFromLocation: (from_location: string) => void;
     setTo: (to: string) => void;
     setSearchTextFrom: (searchText: string) => void;
     setSearchTextTo: (searchText: string) => void;
-    setLocation: (location?: string) => void;
+    setLocationName: (name?: string) => void;
+    setLocationGeom: (geom?: string) => void;
     setUserMarkerLocation: (location: LatLngExpression | null) => void
 }
 
@@ -33,7 +34,7 @@ const useLocationQueryStore = create<LocationQueryStore>((set) => ({
     locationQuery: {from: '', to: '', from_location: ''},
     searchTextFrom: '',
     searchTextTo: '',
-    locationName: '',
+    location: {name: '', geom: ''},
     userMarkerLocation: null,
     setFrom: (from: string) => set((store) => ({locationQuery: {...store.locationQuery, from}})),
     setFromLocation: (from_location?: string) => set((store) => ({
@@ -45,7 +46,8 @@ const useLocationQueryStore = create<LocationQueryStore>((set) => ({
     setTo: (to: string) => set((store) => ({locationQuery: {...store.locationQuery, to}})),
     setSearchTextFrom: (searchTextFrom: string) => set((store) => ({...store, searchTextFrom})),
     setSearchTextTo: (searchTextTo: string) => set((store) => ({...store, searchTextTo})),
-    setLocation: (locationName?: string) => set((store) => ({...store, locationName})),
+    setLocationName: (name?: string) => set((store) => ({location: {...store.location, name}})),
+    setLocationGeom: (geom?: string) => set((store) => ({location: {...store.location, geom}})),
     setUserMarkerLocation: (userMarkerLocation?: LatLngExpression | null) => set((store) => ({
         ...store,
         userMarkerLocation

@@ -19,3 +19,9 @@ export const markerIconGreen = new L.Icon({
     iconSize: [32, 32],
 
 });
+
+export interface Option {
+    id: string;
+    name: string;
+    geom: string;
+}

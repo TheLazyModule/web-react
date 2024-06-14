@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 const ComboBox = ({type}) => {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
+    const setLocationGeom = useLocationQueryStore(s => s.setLocationGeom);
     const locationQuery = useLocationQueryStore(s => s.locationQuery);
 
     const fromLocation = useLocationQueryStore(s => s.locationQuery.from_location);
@@ -38,13 +39,12 @@ const ComboBox = ({type}) => {
         if (type === "from" && fromLocation) {
             setSearchText(UserLocation);
         }
-    })
+    }, [fromLocation]);
 
     const handleOptionSelect = (value) => {
+        setLocationGeom("")
         setSearchText(value);
-        if (type === "from" && fromLocation) {
-            setFrom(value)
-        } else if (type === "from") {
+        if (type === "from") {
             setFrom(value)
         } else {
             setTo(value)
@@ -115,7 +115,7 @@ const ComboBox = ({type}) => {
 
                     {dropdownVisible && isFetched && searchText && searchText.length >= 2 && (
                         <div
-                            className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            className="absolute z-50 w-[70%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
                                 {data && data?.map((r) => (
                                     <div
@@ -134,7 +134,7 @@ const ComboBox = ({type}) => {
 
                     {searchText && searchText !== UserLocation && isLoading && (
                         <div
-                            className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            className="absolute z-50 w-[70%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
                                 <div
                                     className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">

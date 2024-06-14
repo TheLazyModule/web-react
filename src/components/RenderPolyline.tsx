@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
-import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet';
+import {useEffect} from 'react';
+import {Marker, Polyline, Popup, useMap} from 'react-leaflet';
+import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
-import { markerIconRed } from "@/constants/constants.ts";
+import {markerIconRed} from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 
 interface RenderPolylineProps {
@@ -12,10 +12,10 @@ interface RenderPolylineProps {
     estimatedDistance: number | null;
 }
 
-const polylineOptions = { color: "#077bd1db", weight: 6 };
-const dottedPolylineOptions = { color: "#077bd1db", weight: 2, dashArray: '5, 10' };
+const polylineOptions = {color: "#077bd1db", weight: 6};
+const dottedPolylineOptions = {color: "#077bd1db", weight: 2, dashArray: '5, 10'};
 
-const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDistance }: RenderPolylineProps) => {
+const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const map = useMap();
     const flyToDuration = 1.5;
@@ -57,16 +57,16 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
             {lastCoordinate && estimatedDistance !== null && (
                 <Marker icon={markerIconRed} draggable position={lastCoordinate}>
                     <Popup>
-                        Destination <br />
+                        Destination <br/>
                         Distance: {estimatedDistance} meters.
                     </Popup>
                 </Marker>
             )}
 
-            <Polyline positions={polyline} pathOptions={polylineOptions} />
+            <Polyline positions={polyline} pathOptions={polylineOptions}/>
 
             {getDottedPolyline() && (
-                <Polyline positions={getDottedPolyline() as LatLngExpression[]} pathOptions={dottedPolylineOptions} />
+                <Polyline positions={getDottedPolyline() as LatLngExpression[]} pathOptions={dottedPolylineOptions}/>
             )}
         </>
     );

@@ -9,11 +9,13 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
     const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
+    const setLocationGeom = useLocationQueryStore((s) => s.setLocationGeom);
     const setFrom = useLocationQueryStore((s) => s.setFrom);
 
     useMapEvents({
         click(e) {
             const newLocation = `POINT(${e.latlng.lng} ${e.latlng.lat})`;
+            // setLocationGeom('')
             setUserMarkerLocation(e.latlng);
             setFromLocation(newLocation);
             setFrom('My Location');
@@ -24,15 +26,15 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
         console.log(locationQuery);
     }, [locationQuery]);
 
-    useEffect(() => {
-        if (firstCoordinate) {
-            setUserMarkerLocation(firstCoordinate);
-        }
-    }, [firstCoordinate]);
+    // useEffect(() => {
+    //     if (firstCoordinate) {
+    //         setUserMarkerLocation(firstCoordinate);
+    //     }
+    // }, [firstCoordinate]);
 
     const handleMarkerDragEnd = (event) => {
         const latlng = event.target.getLatLng();
-        const newLocation = `POINT(${latlng.lng} ${latlng.lat})`;
+        const newLocation = `POINT(${latlng?.lng} ${latlng?.lat})`;
         setUserMarkerLocation(latlng);
         setFromLocation(newLocation);
         setFrom('My Location');

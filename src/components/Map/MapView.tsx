@@ -1,5 +1,5 @@
-import {useState, useEffect} from "react";
-import {LayersControl, MapContainer, TileLayer} from "react-leaflet";
+import {useEffect, useState} from "react";
+import {LayersControl, MapContainer, Marker, Popup, TileLayer, useMap} from "react-leaflet";
 import Sidebar from "../Sidebar/Sidebar.tsx";
 import {BounceLoader} from "react-spinners";
 import usePolyline from "@/hooks/usePolyline.tsx";
@@ -8,13 +8,29 @@ import toast from "react-hot-toast";
 import "leaflet/dist/leaflet.css";
 import ClickMarker from "@/components/ClickMarker.tsx";
 import Searchbar from "@/components/Searchbar.tsx";
+import {markerIconGreen} from "@/constants/constants.ts";
+import useLocationQueryStore from "@/hooks/useLocationStore.ts";
+import parsePoint from "@/utils/utils.ts";
 
+const FlyToLocation = ({location}) => {
+    const map = useMap();
+
+    useEffect(() => {
+        if (location) {
+            map.flyTo(location, 20);
+        }
+    }, [location, map]);
+
+    return null;
+};
 
 const MapView = () => {
+    const location = useLocationQueryStore((s) => s.location);
+    const locationQuery = useLocationQueryStore((s) => s.locationQuery);
+    const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate} = usePolyline();
     const [loading, setLoading] = useState(true);
     const [isOffline, setIsOffline] = useState(!navigator.onLine);
-
 
     useEffect(() => {
         setLoading(isLoading);
@@ -39,11 +55,14 @@ const MapView = () => {
     }, []);
 
     useEffect(() => {
-        if (isOffline)
+        if (isOffline) {
             toast.error("It seems you're offline");
+        }
     }, [isOffline]);
 
     const {BaseLayer} = LayersControl;
+
+    const parsedLocation = location ? parsePoint(location.geom) : null;
 
     return (
         <div className="relative">
@@ -77,6 +96,15 @@ const MapView = () => {
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         />
                     </BaseLayer>
+
+                    {parsedLocation && !locationQuery.from && !locationQuery.to && !userMarkerLocation && (
+                        <>
+                            <FlyToLocation location={parsedLocation}/>
+                            <Marker icon={markerIconGreen} draggable position={parsedLocation}>
+                                <Popup>Over here!</Popup>
+                            </Marker>
+                        </>
+                    )}
 
                     {polylineCoordinates.length > 0 && (
                         <RenderPolyline
