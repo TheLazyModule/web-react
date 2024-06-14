@@ -11,7 +11,6 @@ const Searchbar = () => {
     const setSearchTextTo = useLocationQueryStore(s => s.setSearchTextTo);
     const setSearchTextFrom = useLocationQueryStore(s => s.setSearchTextFrom);
     const locationName = useLocationQueryStore(s => s.location?.name);
-    const location = useLocationQueryStore((s) => s.location);
     const setLocationName = useLocationQueryStore(s => s.setLocationName);
     const setLocationGeom = useLocationQueryStore(s => s.setLocationGeom);
 
@@ -36,7 +35,6 @@ const Searchbar = () => {
         setSearchTextFrom('')
         setLocationName(value.name);
 
-        console.log(location);
         setLocationGeom(value.geom);
 
         setDropdownVisible(false);

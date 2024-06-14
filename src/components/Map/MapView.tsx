@@ -100,7 +100,7 @@ const MapView = () => {
                         <>
                             <FlyToLocation location={parsedLocation}/>
                             <Marker icon={markerIconGreen} draggable position={parsedLocation}>
-                                <Popup>Over here!</Popup>
+                                <Popup>{location?.name}</Popup>
                             </Marker>
                         </>
                     )}

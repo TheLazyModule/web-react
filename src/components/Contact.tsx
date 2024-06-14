@@ -6,7 +6,6 @@ import {Input, Label, TextArea} from "./Form";
 export function Contact() {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Form submitted");
     };
     return (
         <div className='mb-60'>
