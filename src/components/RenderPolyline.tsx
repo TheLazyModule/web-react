@@ -25,7 +25,7 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
     useEffect(() => {
         if (polyline.length > 0 && lastCoordinate) {
             setUserMarkerLocation(firstCoordinate);
-            map.flyTo([lastCoordinate[0], lastCoordinate[1]], 18);
+            map.flyTo([lastCoordinate[0], lastCoordinate[1]], 20);
         }
     }, [lastCoordinate, firstCoordinate, map, polyline]);
 
