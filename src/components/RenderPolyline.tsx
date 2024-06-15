@@ -16,6 +16,7 @@ const polylineOptions = {color: "#077bd1db", weight: 9};
 const dottedPolylineOptions = {color: "#077bd1db", weight: 4, dashArray: '5, 10'};
 
 const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
+    const locationQuery = useLocationQueryStore((s) => s.locationQuery);
     const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const map = useMap();
@@ -60,7 +61,7 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
             {lastCoordinate && estimatedDistance !== null && (
                 <Marker icon={markerIconRed} draggable position={lastCoordinate}>
                     <Popup>
-                        Destination <br/>
+                        Destination: {locationQuery?.to} <br/>
                         Distance: {estimatedDistance} meters.
                     </Popup>
                 </Marker>
