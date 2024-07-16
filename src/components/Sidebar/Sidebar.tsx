@@ -2,6 +2,7 @@ import {useState} from 'react';
 import './Sidebar.css';
 import Form from '../Form/Form';
 import {SiGoogleclassroom} from "react-icons/si";
+import { FaRoute } from 'react-icons/fa6';
 
 const Sidebar = ({position = 'left', theme = 'light'}) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,8 +21,8 @@ const Sidebar = ({position = 'left', theme = 'light'}) => {
                         {/* Your sidebar content here */}
 
                         <div className='flex flex-col items-center sm:my-0'>
-                            <SiGoogleclassroom size={90} color='#4F6F52'
-                                               className="hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+                            <FaRoute size={100} color='#4F6F52'
+                                     className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
 
                         </div>
                         <Form/>

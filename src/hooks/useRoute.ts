@@ -7,7 +7,7 @@ interface Route {
     paths: { name: string, geom: string, geom_geographic: string }[];
 }
 
-const apiClient = new APIClient<Route>("/all/route");
+const apiClient = new APIClient<Route>("/cities/route");
 
 const useRoute = () => {
     const locationQuery = useLocationQueryStore(s => s.locationQuery);

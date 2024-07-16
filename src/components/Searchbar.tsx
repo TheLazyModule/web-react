@@ -16,7 +16,6 @@ const Searchbar = () => {
 
     const {data /*,error*/, isLoading, isFetched, error} = useLocation();
 
-
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement | null>(null);

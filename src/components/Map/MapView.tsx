@@ -75,7 +75,7 @@ const MapView = () => {
             )}
 
             <MapContainer
-                center={[6.673175, -1.565423]}
+                center={[51.5072, 0.1276]}
                 zoom={15}
                 style={{height: "100vh", width: "100%"}}
                 whenReady={() => setLoading(false)}

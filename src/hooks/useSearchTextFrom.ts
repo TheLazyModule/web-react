@@ -4,7 +4,7 @@ import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import ms from 'ms';
 import {Option} from "@/constants/constants.ts";
 
-const apiClient = new APIClient<Option[]>("/all/search");
+const apiClient = new APIClient<Option[]>("/cities/search");
 
 
 const UseSearchTextFrom = () => {

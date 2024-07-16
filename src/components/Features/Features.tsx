@@ -20,23 +20,25 @@ const Features = () => {
                 }}
                 className=""
             >
-                <div className='flex flex-col justify-between sm:flex-row items-center px-20 py-20'>
-                    <motion.div className='flex flex-col items-center '>
-                        <h3 className='text-[#1A4D2E] text-2xl'>Find Building</h3>
-                        <BsBuilding size={120} color='#4F6F52'
-                                    className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
-                    </motion.div>
+                <div className='flex flex-col justify-between sm:flex-row items-center px-80 py-20'>
 
-                    <motion.div className='flex flex-col items-center my-10 sm:my-0'>
-                        <h3 className='text-[#1A4D2E] text-2xl'>Find Classroom</h3>
-                        <SiGoogleclassroom size={120} color='#4F6F52'
-                                           className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
-                    </motion.div>
+                    {/*<motion.div className='flex flex-col items-center my-10 sm:my-0'>*/}
+                    {/*    <h3 className='text-[#1A4D2E] text-2xl'>Find Classroom</h3>*/}
+                    {/*    <SiGoogleclassroom size={120} color='#4F6F52'*/}
+                    {/*                       className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>*/}
+                    {/*</motion.div>*/}
 
                     <motion.div className='flex flex-col items-center'>
                         <h3 className='text-[#1A4D2E] text-2xl'>Find Place</h3>
                         <FaRoute size={120} color='#4F6F52'
                                  className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+                    </motion.div>
+
+                    <motion.div className='flex flex-col items-center'>
+
+                        <h3 className='text-[#1A4D2E] text-2xl'>Find Buildings</h3>
+                        <BsBuilding size={120} color='#4F6F52'
+                                    className="my-6 hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
                     </motion.div>
                 </div>
             </motion.div>

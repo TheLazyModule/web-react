@@ -25,7 +25,7 @@ export function HeroSection() {
             >
                 <motion.p
                     className="font-bold text-4xl md:text-7xl lg:text-8xl text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 bg-[#F5EFE6] py-4">
-                    Find My Classroom <br/>
+                    London Navigator <br/>
                 </motion.p>
                 <NavLink to='/map'>
                 <button
