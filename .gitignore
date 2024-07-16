@@ -12,6 +12,7 @@ assets
 dist
 dist-ssr
 *.local
+public/tiles
 
 # Editor directories and files
 .vscode/*
