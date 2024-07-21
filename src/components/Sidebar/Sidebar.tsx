@@ -1,7 +1,6 @@
 import {useState} from 'react';
 import './Sidebar.css';
 import Form from '../Form/Form';
-import {SiGoogleclassroom} from "react-icons/si";
 import { FaRoute } from 'react-icons/fa6';
 
 const Sidebar = ({position = 'left', theme = 'light'}) => {

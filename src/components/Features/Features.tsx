@@ -1,5 +1,4 @@
 import {FaRoute} from "react-icons/fa6";
-import {SiGoogleclassroom} from "react-icons/si";
 import {BsBuilding} from "react-icons/bs";
 import {motion} from "framer-motion";
 
