@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import parsePoint from "@/utils/utils.ts";
 
 const usePolyline = () => {
-    const {data, isLoading, error} = useRoute();
+    const {data, isLoading, error , isFetched} = useRoute();
 
     let polylineCoordinates: LatLngExpression[] = [];
     let lastCoordinate: LatLngExpression | null = null;
@@ -25,7 +25,7 @@ const usePolyline = () => {
         roundedDistance = data.distance ? Math.round(data.distance) : null;
     }
 
-    return {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate};
+    return {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate, isFetched};
 };
 
 export default usePolyline;

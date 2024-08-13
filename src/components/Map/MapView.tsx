@@ -1,18 +1,20 @@
-import {useEffect, useState} from "react";
-import {LayersControl, MapContainer, Marker, Popup, TileLayer, useMap} from "react-leaflet";
+import { useEffect, useState } from "react";
+import { LayersControl, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import Sidebar from "../Sidebar/Sidebar.tsx";
-import {BounceLoader} from "react-spinners";
+import { BounceLoader } from "react-spinners";
 import usePolyline from "@/hooks/usePolyline.tsx";
 import RenderPolyline from "@/components/RenderPolyline.tsx";
-import toast from "react-hot-toast";
 import "leaflet/dist/leaflet.css";
 import ClickMarker from "@/components/ClickMarker.tsx";
 import Searchbar from "@/components/Searchbar.tsx";
-import {markerIconGreen} from "@/constants/constants.ts";
+import { markerIconGreen } from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import parsePoint from "@/utils/utils.ts";
+import useOffline from "@/hooks/useOffline.ts";
+import Drawer from "@/components/Drawer.tsx";
+import { Button } from "@/components/ui/button.tsx";
 
-const FlyToLocation = ({location}) => {
+const FlyToLocation = ({ location }) => {
     const map = useMap();
 
     useEffect(() => {
@@ -27,65 +29,68 @@ const FlyToLocation = ({location}) => {
 const MapView = () => {
     const location = useLocationQueryStore((s) => s.location);
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
-    const {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate} = usePolyline();
+    const { polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate } = usePolyline();
     const [loading, setLoading] = useState(true);
-    const [isOffline, setIsOffline] = useState(!navigator.onLine);
+    const [/*isPolyLineSet*/_, setIsPolyLineSet] = useState(false);
+    const [shouldOpenDrawer, setShouldOpenDrawer] = useState(false);
+    const [drawerClosedByUser, setDrawerClosedByUser] = useState(false); // New state variable to track manual close
+    useOffline();
+
+    useEffect(() => {
+        if (polylineCoordinates && polylineCoordinates.length > 0) {
+            setIsPolyLineSet(true);
+            if (!drawerClosedByUser) {
+                setShouldOpenDrawer(true);  // Open drawer when polyline is ready if not manually closed
+            }
+        } else {
+            setIsPolyLineSet(false);
+            setShouldOpenDrawer(false);  // Close drawer when there is no polyline
+        }
+    }, [polylineCoordinates, drawerClosedByUser]);
 
     useEffect(() => {
         setLoading(isLoading);
     }, [isLoading]);
 
-    useEffect(() => {
-        const handleOffline = () => {
-            setIsOffline(true);
-        };
-
-        const handleOnline = () => {
-            setIsOffline(false);
-        };
-
-        window.addEventListener('offline', handleOffline);
-        window.addEventListener('online', handleOnline);
-
-        return () => {
-            window.removeEventListener('offline', handleOffline);
-            window.removeEventListener('online', handleOnline);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (isOffline) {
-            toast.error("It seems you're offline");
-        }
-    }, [isOffline]);
-
-    const {BaseLayer} = LayersControl;
+    const { BaseLayer } = LayersControl;
 
     const parsedLocation = location ? parsePoint(location.geom) : null;
 
+    const handleCloseDrawer = () => {
+        setShouldOpenDrawer(false);
+        setDrawerClosedByUser(true);  // Indicate that the drawer was manually closed
+    };
+
+    // const handleOpenDrawer = () => {
+    //     setShouldOpenDrawer(true);
+    //     setDrawerClosedByUser(false);  // Indicate that the drawer can be opened automatically again
+    // };
+
     return (
         <div className="relative">
-            <Searchbar/>
-            <Sidebar position="left" theme="light"/>
+            <Searchbar />
+            <Sidebar position="left" theme="light" />
 
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center z-[1000] bg-white bg-opacity-75">
-                    <BounceLoader size={50} color={"#4F6F52"} loading={loading}/>
+                    <BounceLoader size={50} color={"#4F6F52"} loading={loading} />
                 </div>
             )}
 
             <MapContainer
+                className="w-full h-full bg-black"
                 center={[6.673175, -1.565423]}
-                zoom={15}
-                style={{height: "100vh", width: "100%"}}
+                zoom={16}
+                style={{ height: "100vh", width: "100%", backgroundColor: "grey" }}
                 whenReady={() => setLoading(false)}
             >
                 <LayersControl>
-                    <BaseLayer checked name="Satellite View">
+                    <BaseLayer checked name="knust_tms">
                         <TileLayer
-                            url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
-                            maxZoom={20}
-                            subdomains={["mt1", "mt2", "mt3"]}
+                            tms
+                            url="https://knust-tms.intdeltas.com/tms/{z}/{x}/{y}.png"
+                            maxZoom={22}
+                            minZoom={2}
                         />
                     </BaseLayer>
 
@@ -98,9 +103,22 @@ const MapView = () => {
 
                     {parsedLocation && !locationQuery.from && !locationQuery.to && (
                         <>
-                            <FlyToLocation location={parsedLocation}/>
+                            <FlyToLocation location={parsedLocation} />
                             <Marker icon={markerIconGreen} draggable position={parsedLocation}>
-                                <Popup>{location?.name}</Popup>
+                                <Popup minWidth={200} maxWidth={500}>
+                                    <div className="flex flex-col h-full w-full">
+                                        <p className='text-lg font-bold'>{location?.name}</p>
+                                        {location?.image_urls && location?.image_urls[0] && (
+                                            <div className="flex-1">
+                                                <img
+                                                    src={location.image_urls[0]}
+                                                    alt={location.name}
+                                                    className='w-full h-full object-cover'
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </Popup>
                             </Marker>
                         </>
                     )}
@@ -113,11 +131,44 @@ const MapView = () => {
                                 lastCoordinate={lastCoordinate}
                                 estimatedDistance={roundedDistance}
                             />
-
+                            <Drawer
+                                anchor="bottom"
+                                open={shouldOpenDrawer}
+                                onOpenChange={setShouldOpenDrawer}
+                            >
+                                <div className='flex flex-row justify-center py-4 items-center'>
+                                    <div className='rounded-lg h-2 w-[8%] bg-muted'></div>
+                                </div>
+                                <div className='flex flex-row justify-between p-5 text-foreground'>
+                                    <div>
+                                        <h2 className='text-2xl font-semibold'>Route Information</h2>
+                                        <p className='text-sm text-muted-foreground'>Shortest path from {locationQuery.from?.name} to {locationQuery.to?.name}</p>
+                                        {locationQuery.to?.image_urls && locationQuery.to?.image_urls?.length > 0 &&
+                                            <p className='text-sm text-muted-foreground'>Check out images of {locationQuery.to.name}</p>}
+                                    </div>
+                                    <div className='pr-[6rem]'>
+                                        <Button variant='destructive'
+                                                onClick={handleCloseDrawer}>Close</Button>
+                                    </div>
+                                </div>
+                                <div className='h-[1px] w-full bg-input'></div>
+                                <div className="flex flex-col overflow-auto max-h-[65vh] p-4 pb-0 text-foreground">
+                                    {/* Image gallery */}
+                                    {locationQuery.to?.image_urls && locationQuery.to.image_urls.length > 0 && (
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {locationQuery.to.image_urls.slice(0, 4).map((url, index) => (
+                                                <div key={index} className="aspect-w-1 aspect-h-1">
+                                                    <img src={url} alt={`Image ${index + 1}`} className="object-cover w-full h-full rounded"/>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </Drawer>
                         </>
                     )}
 
-                    <ClickMarker firstCoordinate={firstCoordinate}/>
+                    <ClickMarker firstCoordinate={firstCoordinate} />
                 </LayersControl>
             </MapContainer>
         </div>

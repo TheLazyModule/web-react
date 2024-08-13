@@ -1,12 +1,12 @@
-import {useState, useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import useSearchText from "@/hooks/useSearchTextFrom.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
-import {UserLocation} from "@/constants/constants.ts";
+import {Option, UserLocation} from "@/constants/constants.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
 
-const ComboBox = ({type}) => {
+const ComboBox = ({type}: { type: string }) => {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
     const setLocationGeom = useLocationQueryStore(s => s.setLocationGeom);
@@ -41,9 +41,9 @@ const ComboBox = ({type}) => {
         }
     }, [fromLocation]);
 
-    const handleOptionSelect = (value) => {
+    const handleOptionSelect = (value: Option) => {
         setLocationGeom("")
-        setSearchText(value);
+        setSearchText(value.name);
         if (type === "from") {
             setFrom(value)
         } else {
@@ -58,9 +58,9 @@ const ComboBox = ({type}) => {
             setFromLocation("");
         }
         if (type === "from") {
-            setFrom("")
+            setFrom({} as Option)
         } else {
-            setTo("")
+            setTo({} as Option)
         }
         setSearchText(e.target.value);
 
@@ -120,7 +120,7 @@ const ComboBox = ({type}) => {
                                 {data && data?.map((r) => (
                                     <div
                                         key={r.id}
-                                        onClick={() => handleOptionSelect(r.name)}
+                                        onClick={() => handleOptionSelect(r)}
                                         className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
                                     >
                                         <div className="flex justify-between items-center w-full">

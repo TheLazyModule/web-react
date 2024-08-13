@@ -12,7 +12,7 @@ const apiClient = new APIClient<Route>("/all/route");
 const useRoute = () => {
     const locationQuery = useLocationQueryStore(s => s.locationQuery);
 
-    const enabled = !!locationQuery.from && !!locationQuery.to && (locationQuery.from !== locationQuery.to);
+    const enabled = !!locationQuery.from?.name && !!locationQuery.to?.name && (locationQuery.from.name !== locationQuery.to.name);
 
     return useQuery<Route>(
         {
@@ -21,9 +21,9 @@ const useRoute = () => {
                 if (locationQuery.from && locationQuery.to) {
                     return apiClient.getAll({
                         params: {
-                            from: locationQuery.from,
+                            from: locationQuery.from.name,
                             from_location: locationQuery.from_location,
-                            to: locationQuery.to
+                            to: locationQuery.to.name
                         }
                     });
                 }

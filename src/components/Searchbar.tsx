@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
@@ -13,6 +13,7 @@ const Searchbar = () => {
     const locationName = useLocationQueryStore(s => s.location?.name);
     const setLocationName = useLocationQueryStore(s => s.setLocationName);
     const setLocationGeom = useLocationQueryStore(s => s.setLocationGeom);
+    const setImageUrls = useLocationQueryStore(s => s.setLocationImgUrl)
 
     const {data /*,error*/, isLoading, isFetched, error} = useLocation();
 
@@ -34,6 +35,7 @@ const Searchbar = () => {
         setSearchTextTo('')
         setSearchTextFrom('')
         setLocationName(value.name);
+        setImageUrls(value.image_urls)
 
         setLocationGeom(value.geom);
 
