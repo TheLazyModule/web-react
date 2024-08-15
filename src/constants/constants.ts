@@ -20,10 +20,10 @@ export const markerIconGreen = new L.Icon({
 
 });
 
-export interface Option {
+export interface OptionValue {
     id: string;
     name: string;
-    category_id: string;
+    category_id: number;
     geom: string;
     image_urls?: string[];
 }

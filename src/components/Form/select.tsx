@@ -2,14 +2,14 @@ import {useEffect, useRef, useState} from "react";
 import useSearchText from "@/hooks/useSearchTextFrom.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
-import {Option, UserLocation} from "@/constants/constants.ts";
+import {OptionValue, UserLocation} from "@/constants/constants.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
 
 const ComboBox = ({type}: { type: string }) => {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
-    const setLocationGeom = useLocationQueryStore(s => s.setLocationGeom);
+    const setLocationGeom = useLocationQueryStore(s => s.setSingleLocationGeom);
     const locationQuery = useLocationQueryStore(s => s.locationQuery);
 
     const fromLocation = useLocationQueryStore(s => s.locationQuery.from_location);
@@ -23,6 +23,19 @@ const ComboBox = ({type}: { type: string }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement | null>(null);
+    const selectedCategoryId = useLocationQueryStore(s => s.selectedCategoryId);
+    const [categoryContent, setCategoryContent] = useState<OptionValue[]>([] as OptionValue[]);
+
+    useEffect(() => {
+        if (isFetched && data && data?.length > 0) {
+            if (selectedCategoryId === 0) {
+                setCategoryContent(data);
+            } else {
+                const filteredCategory = data?.filter(r => r.category_id === selectedCategoryId);
+                setCategoryContent(filteredCategory);
+            }
+        }
+    }, [selectedCategoryId, isFetched, data]);
 
     useEffect(() => {
         if (error) {
@@ -41,7 +54,7 @@ const ComboBox = ({type}: { type: string }) => {
         }
     }, [fromLocation]);
 
-    const handleOptionSelect = (value: Option) => {
+    const handleOptionSelect = (value: OptionValue) => {
         setLocationGeom("")
         setSearchText(value.name);
         if (type === "from") {
@@ -58,9 +71,9 @@ const ComboBox = ({type}: { type: string }) => {
             setFromLocation("");
         }
         if (type === "from") {
-            setFrom({} as Option)
+            setFrom({} as OptionValue)
         } else {
-            setTo({} as Option)
+            setTo({} as OptionValue)
         }
         setSearchText(e.target.value);
 
@@ -117,7 +130,7 @@ const ComboBox = ({type}: { type: string }) => {
                         <div
                             className="absolute z-50 w-[70%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
-                                {data && data?.map((r) => (
+                                {categoryContent && categoryContent?.map((r) => (
                                     <div
                                         key={r.id}
                                         onClick={() => handleOptionSelect(r)}
@@ -134,7 +147,7 @@ const ComboBox = ({type}: { type: string }) => {
 
                     {searchText && searchText !== UserLocation && isLoading && (
                         <div
-                            className="absolute z-50 w-[70%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            className="absolute z-50 w-[55%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
                                 <div
                                     className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">
@@ -148,9 +161,9 @@ const ComboBox = ({type}: { type: string }) => {
                         </div>
                     )}
 
-                    {searchText && searchText !== UserLocation && data && data?.length === 0 && (
+                    {searchText && searchText !== UserLocation && isFetched && categoryContent && categoryContent?.length === 0 && (
                         <div
-                            className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            className="absolute z-50 w-[56%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
                                 <div
                                     className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">

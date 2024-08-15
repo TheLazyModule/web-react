@@ -2,15 +2,15 @@ import {useQuery} from "@tanstack/react-query";
 import APIClient from "@/services/apiClient.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import ms from 'ms';
-import {Option} from "@/constants/constants.ts";
+import {OptionValue} from "@/constants/constants.ts";
 
-const apiClient = new APIClient<Option[]>("/all/search");
+const apiClient = new APIClient<OptionValue[]>("/all/search");
 
 
 const UseSearchTextFrom = () => {
     const searchTextFrom = useLocationQueryStore(s => s.searchTextFrom);
 
-    return useQuery<Option[]>({
+    return useQuery<OptionValue[]>({
         queryKey: ['searchFrom', searchTextFrom],
         queryFn: () => {
             if (searchTextFrom && searchTextFrom.length >= 2) {

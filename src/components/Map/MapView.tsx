@@ -27,7 +27,7 @@ const FlyToLocation = ({ location }) => {
 };
 
 const MapView = () => {
-    const location = useLocationQueryStore((s) => s.location);
+    const location = useLocationQueryStore((s) => s.singleLocation);
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
     const { polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate } = usePolyline();
     const [loading, setLoading] = useState(true);
@@ -81,7 +81,19 @@ const MapView = () => {
                 className="w-full h-full bg-black"
                 center={[6.673175, -1.565423]}
                 zoom={16}
-                style={{ height: "100vh", width: "100%", backgroundColor: "grey" }}
+                style={{
+                    height: "100vh",
+                    width: "100%",
+                    backgroundColor: "#e5e5f7",
+                    backgroundImage: `
+    linear-gradient(#80e38d 2px, transparent 2px),
+    linear-gradient(90deg, #80e38d 2px, transparent 2px),
+    linear-gradient(#80e38d 1px, transparent 1px),
+    linear-gradient(90deg, #80e38d 1px, #e5e5f7 1px)
+  `,
+                    backgroundSize: "50px 50px, 50px 50px, 10px 10px, 10px 10px",
+                    backgroundPosition: "-2px -2px, -2px -2px, -1px -1px, -1px -1px"
+                }}
                 whenReady={() => setLoading(false)}
             >
                 <LayersControl>
@@ -93,14 +105,6 @@ const MapView = () => {
                             minZoom={2}
                         />
                     </BaseLayer>
-
-                    <BaseLayer name="OpenStreetMap">
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        />
-                    </BaseLayer>
-
                     {parsedLocation && !locationQuery.from && !locationQuery.to && (
                         <>
                             <FlyToLocation location={parsedLocation} />

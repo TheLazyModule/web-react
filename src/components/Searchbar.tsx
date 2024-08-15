@@ -3,16 +3,16 @@ import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
 import useLocation from "@/hooks/useLocation.ts";
-import {Option} from "@/constants/constants";
+import {OptionValue} from "@/constants/constants";
 
 const Searchbar = () => {
     const setTo = useLocationQueryStore(s => s.setTo);
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setSearchTextTo = useLocationQueryStore(s => s.setSearchTextTo);
     const setSearchTextFrom = useLocationQueryStore(s => s.setSearchTextFrom);
-    const locationName = useLocationQueryStore(s => s.location?.name);
+    const locationName = useLocationQueryStore(s => s.singleLocation?.name);
     const setLocationName = useLocationQueryStore(s => s.setLocationName);
-    const setLocationGeom = useLocationQueryStore(s => s.setLocationGeom);
+    const setLocationGeom = useLocationQueryStore(s => s.setSingleLocationGeom);
     const setImageUrls = useLocationQueryStore(s => s.setLocationImgUrl)
 
     const {data /*,error*/, isLoading, isFetched, error} = useLocation();
@@ -29,7 +29,7 @@ const Searchbar = () => {
     }, [isFetched, error]);
 
 
-    const handleOptionSelect = (value: Option) => {
+    const handleOptionSelect = (value: OptionValue) => {
         setTo('')
         setFrom('')
         setSearchTextTo('')

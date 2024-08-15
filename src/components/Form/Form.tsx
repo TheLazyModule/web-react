@@ -1,10 +1,13 @@
 "use client";
 import React from "react";
+import {MdMyLocation} from "react-icons/md";
 import {cn} from "@/lib/utils.ts";
 import {IoAccessibility, IoEllipsisVertical, IoLocationOutline} from "react-icons/io5";
-import {useForm, SubmitHandler} from "react-hook-form";
+import {SubmitHandler, useForm} from "react-hook-form";
 import ComboBox from "./select";
 import useLocationQueryStore from "@/hooks/useLocationStore";
+import ButtonGroup from "@/components/ButtonGroup";
+import {Button} from "@/components/ui/button.tsx";
 
 interface IFormInput {
     from: string;
@@ -14,13 +17,14 @@ interface IFormInput {
 function Form() {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
-    const {register, handleSubmit,  formState: {errors}} = useForm<IFormInput>();
+    const {register, handleSubmit, formState: {errors}} = useForm<IFormInput>();
+    const locationQueryFrom = useLocationQueryStore((s) => s.locationQuery.from);
 
 
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
         if (data.from && data.to) {
-            setFrom(data.from);
-            setTo(data.to);
+            setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: data.from});
+            setTo({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: data.to});
         }
     };
 
@@ -34,7 +38,8 @@ function Form() {
                 Where do you want to go?
             </p>
 
-            <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
+            <form className="my-8 flex flex-col justify-center items-center" onSubmit={handleSubmit(onSubmit)}>
+                <ButtonGroup/>
                 <div className="flex flex-row space-y-2 md:space-y-0 mb-4">
                     <div className='items-center'>
                         <IoAccessibility size={25} color='green'/>
@@ -44,13 +49,26 @@ function Form() {
                         <IoLocationOutline size={25} color='red'/>
                     </div>
                     <div>
-                        <LabelInputContainer className='mb-12 ml-3'>
-                            <ComboBox type='from'  {...register("from", {required: true})} />
-                            {errors.from && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
+                        <LabelInputContainer className='flex flex-row mb-12 ml-3'>
+                            <div className='flex flex-col'>
+                                <ComboBox type='from'  {...register("from", {required: true})} />
+                                {errors.from && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
+                            </div>
+                            <div className='flex flex-col justify-center items-center'>
+                                <Button className='bg-background border-0 hover:bg-muted' variant='outline'>
+                                    <MdMyLocation size={24} className='text-blue-700 mx-2  cursor-pointer'/>
+                                </Button>
+                            </div>
                         </LabelInputContainer>
-                        <LabelInputContainer className='mt-6 ml-3'>
-                            <ComboBox type='to'  {...register("to", {required: true})} />
-                            {errors.to && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
+                        <LabelInputContainer className='flex flex-row mt-6 ml-3'>
+                            <div className='flex flex-col'>
+                                <ComboBox type='to'  {...register("to", {required: true})} />
+                                {errors.to && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
+                            </div>
+                            <div className='flex flex-col justify-center items-center'>
+                                <div className='mx-9'></div>
+
+                            </div>
                         </LabelInputContainer>
                     </div>
                 </div>

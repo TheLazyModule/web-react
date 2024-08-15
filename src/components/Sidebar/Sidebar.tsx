@@ -10,12 +10,12 @@ const Sidebar = ({position = 'left', theme = 'light'}) => {
     const toggleSidebar = () => setIsOpen(!isOpen);
 
     // Construct class names based on state and props
-    const sidebarClasses = `sidepanel z-[100000000000] sidepanel-${position} ${isOpen ? 'opened' : 'closed'} ${theme === 'dark' ? 'sidepanel-dark' : ''}`;
+    const sidebarClasses = ` sidepanel z-[100000000000] sidepanel-${position} ${isOpen ? 'opened' : 'closed'} ${theme === 'dark' ? 'sidepanel-dark' : ''}`;
 
     return (
         <div className={sidebarClasses}>
-            <div className="sidepanel-inner-wrapper">
-                <div className="sidepanel-content-wrapper">
+            <div className="sidepanel-inner-wrapper ">
+                <div className="sidepanel-content-wrapper  ">
                     <div className="sidepanel-content sm:mt-2 mt-24 ">
                         {/* Your sidebar content here */}
 
