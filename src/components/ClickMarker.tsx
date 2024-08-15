@@ -13,13 +13,13 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
     const locationQueryFrom = useLocationQueryStore((s) => s.locationQuery.from);
 
     useMapEvents({
-        click(e) {
-            const newLocation = `POINT(${e.latlng.lng} ${e.latlng.lat})`;
-            setLocationGeom('')
-            setUserMarkerLocation(e.latlng);
-            setFromLocation(newLocation);
-            setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
-        },
+        // click(e) {
+        //     const newLocation = `POINT(${e.latlng.lng} ${e.latlng.lat})`;
+        //     setLocationGeom('')
+        //     setUserMarkerLocation(e.latlng);
+        //     setFromLocation(newLocation);
+        //     setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
+        // },
     });
 
 

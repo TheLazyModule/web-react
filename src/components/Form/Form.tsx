@@ -17,14 +17,45 @@ interface IFormInput {
 function Form() {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
+    const setLiveLocation = useLocationQueryStore(s => s.setLiveLocation); // New function to set live location
+
     const {register, handleSubmit, formState: {errors}} = useForm<IFormInput>();
     const locationQueryFrom = useLocationQueryStore((s) => s.locationQuery.from);
-
+    const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
+    const setLocationGeom = useLocationQueryStore((s) => s.setSingleLocationGeom);
 
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
         if (data.from && data.to) {
             setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: data.from});
             setTo({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: data.to});
+        }
+    };
+
+    const handleGeolocationClick = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const {latitude, longitude} = position.coords;
+                    setLocationGeom('')
+                    const newLiveLocation = `POINT(${longitude} ${latitude})`;
+                    setLiveLocation(newLiveLocation);  // Update the live location in the store
+                    setFromLocation(newLiveLocation);
+                    console.log(newLiveLocation)
+                    setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
+
+                    //     setUserMarkerLocation(e.latlng);
+                },
+                (error) => {
+                    console.error("Error fetching location:", error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0,
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
         }
     };
 
@@ -52,11 +83,13 @@ function Form() {
                         <LabelInputContainer className='flex flex-row mb-12 ml-3'>
                             <div className='flex flex-col'>
                                 <ComboBox type='from'  {...register("from", {required: true})} />
-                                {errors.from && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
+                                {errors.from && <h5 className='text-red-700/20'><span>You missed this field</span></h5>}
                             </div>
                             <div className='flex flex-col justify-center items-center'>
-                                <Button className='bg-background border-0 hover:bg-muted' variant='outline'>
-                                    <MdMyLocation size={24} className='text-blue-700 mx-2  cursor-pointer'/>
+                                <Button type='button'
+                                        className='bg-background border-0 hover:bg-muted hover:rounded-3xl'
+                                        variant='outline' onClick={handleGeolocationClick}>
+                                    <MdMyLocation size={26} className='text-blue-700 mx-2 cursor-pointer'/>
                                 </Button>
                             </div>
                         </LabelInputContainer>
@@ -72,15 +105,7 @@ function Form() {
                         </LabelInputContainer>
                     </div>
                 </div>
-                {/*<button*/}
-                {/*    className={`bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] ${(!fromValue || !toValue) ? 'opacity-50 cursor-not-allowed' : ''}`}*/}
-                {/*    type="submit"*/}
-                {/*    disabled={!locationQuery.from || !locationQuery.to}*/}
-                {/*>*/}
-                {/*    Find &rarr;*/}
                 <BottomGradient/>
-                {/*</button>*/}
-
                 <div
                     className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full"/>
             </form>
