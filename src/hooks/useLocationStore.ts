@@ -15,14 +15,16 @@ export interface ILocation {
 }
 
 export interface LocationQueryStore {
-    liveLocation: string,
+    liveLocationWkt: string,
+    liveLocationLatLng: LatLngExpression,
     selectedCategoryId: number;
     locationQuery: LocationQuery;
     searchTextFrom?: string;
     searchTextTo?: string;
+    setLiveLocationWkt: (liveLocationWkt: string) => void,
+    setLiveLocationLatLng: (latlng: LatLngExpression) => void,
     singleLocation?: { name?: string, geom?: string, image_urls?: string[] }
     userMarkerLocation?: LatLngExpression | null;
-    setLiveLocation: (liveLocation: string) => void,
     setSelectedCategoryId: (selectedCategoryId: number) => void;
     setFrom: (from: OptionValue) => void;
     setFromLocation: (from_location: string) => void;
@@ -37,14 +39,16 @@ export interface LocationQueryStore {
 
 
 const useLocationQueryStore = create<LocationQueryStore>((set) => ({
-    liveLocation: "",
+    liveLocationWkt: "",
+    liveLocationLatLng: [] as unknown as LatLngExpression,
     selectedCategoryId: 0,
     locationQuery: {from: {} as OptionValue, to: {} as OptionValue, from_location: ''},
     searchTextFrom: '',
     searchTextTo: '',
     singleLocation: {name: '', geom: '', image_urls: []},
     userMarkerLocation: null,
-    setLiveLocation: (liveLocation: string) => set((store) => ({...store, liveLocation})),
+    setLiveLocationWkt: (liveLocationWkt: string) => set((store) => ({...store, liveLocationWkt})),
+    setLiveLocationLatLng: (latlng: LatLngExpression) => set((store) => ({...store, liveLocation: latlng})),
     setSelectedCategoryId: (selectedCategoryId: number) => set((store) => ({
         ...store,
         selectedCategoryId: selectedCategoryId

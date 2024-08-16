@@ -8,6 +8,8 @@ import ComboBox from "./select";
 import useLocationQueryStore from "@/hooks/useLocationStore";
 import ButtonGroup from "@/components/ButtonGroup";
 import {Button} from "@/components/ui/button.tsx";
+import {LatLngExpression} from "leaflet";
+import toast from "react-hot-toast";
 
 interface IFormInput {
     from: string;
@@ -17,7 +19,8 @@ interface IFormInput {
 function Form() {
     const setFrom = useLocationQueryStore(s => s.setFrom);
     const setTo = useLocationQueryStore(s => s.setTo);
-    const setLiveLocation = useLocationQueryStore(s => s.setLiveLocation); // New function to set live location
+    const setLiveLocationWkt = useLocationQueryStore(s => s.setLiveLocationWkt); // New function to set live location
+    const setLiveLocationLatLng = useLocationQueryStore(s => s.setLiveLocationLatLng); // New function to set live location
 
     const {register, handleSubmit, formState: {errors}} = useForm<IFormInput>();
     const locationQueryFrom = useLocationQueryStore((s) => s.locationQuery.from);
@@ -37,8 +40,10 @@ function Form() {
                 (position) => {
                     const {latitude, longitude} = position.coords;
                     setLocationGeom('')
+                    const latlng: LatLngExpression = [latitude, longitude];
                     const newLiveLocation = `POINT(${longitude} ${latitude})`;
-                    setLiveLocation(newLiveLocation);  // Update the live location in the store
+                    setLiveLocationWkt(newLiveLocation);
+                    setLiveLocationLatLng(latlng);
                     setFromLocation(newLiveLocation);
                     console.log(newLiveLocation)
                     setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
@@ -46,7 +51,7 @@ function Form() {
                     //     setUserMarkerLocation(e.latlng);
                 },
                 (error) => {
-                    console.error("Error fetching location:", error);
+                    toast.error(`Error fetching location: ${error.message}`);
                 },
                 {
                     enableHighAccuracy: true,
@@ -55,7 +60,7 @@ function Form() {
                 }
             );
         } else {
-            console.error("Geolocation is not supported by this browser.");
+            toast.error("Geolocation is not supported by this browser.");
         }
     };
 

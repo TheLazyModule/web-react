@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
-import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet';
+import {useEffect, useState} from 'react';
+import {Marker, Polyline, Popup, useMap} from 'react-leaflet';
+import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
-import { markerIconRed } from "@/constants/constants.ts";
+import {markerIconRed} from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 
 interface RenderPolylineProps {
@@ -12,17 +12,14 @@ interface RenderPolylineProps {
     estimatedDistance: number | null;
 }
 
-const polylineOptions = { color: "url(#polylineGradient)", weight: 18 }; // Default to gradient
-const clickedPolylineOptions = { color: "url(#polylineHighlightGradient)", weight: 18 }; // Highlighted gradient when clicked
-const dottedPolylineOptions = { color: "#077bd1db", weight: 10, dashArray: '5, 10' };
+const polylineOptions = {color: "url(#polylineGradient)", weight: 18}; // Default to gradient
+const clickedPolylineOptions = {color: "url(#polylineHighlightGradient)", weight: 18}; // Highlighted gradient when clicked
+const dottedPolylineOptions = {color: "#077bd1db", weight: 10, dashArray: '5, 10'};
 
-const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDistance }: RenderPolylineProps) => {
+const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
     const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
-    const liveLocation = useLocationQueryStore((s) => s.liveLocation); // Get live location from store
-    const location: LatLngExpression = [latitude, longitude];
-
     const map = useMap();
     const flyToDuration = 1.5;
 
@@ -128,7 +125,7 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
             {lastCoordinate && estimatedDistance !== null && (
                 <Marker icon={markerIconRed} draggable position={lastCoordinate}>
                     <Popup>
-                        Destination: {locationQuery?.to?.name} <br />
+                        Destination: {locationQuery?.to?.name} <br/>
                         Distance: {estimatedDistance} meters.
                     </Popup>
                 </Marker>
@@ -146,21 +143,13 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
             />
 
             {popupPosition && selected && ( // Show the popup only if selected and the position is set
-                <Popup position={popupPosition} onClose={() => setPopupPosition(null)}>
+                <Popup position={popupPosition}>
                     <div>Polyline clicked!</div>
                 </Popup>
             )}
 
-            {liveLocation && ( // Render the user's live location as a marker if available
-                <Marker position={liveLocation} icon={markerIconRed}>
-                    <Popup>
-                        You are here.
-                    </Popup>
-                </Marker>
-            )}
-
             {getDottedPolyline() && (
-                <Polyline positions={getDottedPolyline() as LatLngExpression[]} pathOptions={dottedPolylineOptions} />
+                <Polyline positions={getDottedPolyline() as LatLngExpression[]} pathOptions={dottedPolylineOptions}/>
             )}
         </>
     );
