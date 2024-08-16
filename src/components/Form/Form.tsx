@@ -92,7 +92,7 @@ function Form() {
                             </div>
                             <div className='flex flex-col justify-center items-center'>
                                 <Button type='button'
-                                        className='bg-background border-0 hover:bg-muted hover:rounded-3xl'
+                                        className=' border-0 hover:bg-muted hover:rounded-3xl'
                                         variant='outline' onClick={handleGeolocationClick}>
                                     <MdMyLocation size={26} className='text-blue-700 mx-2 cursor-pointer'/>
                                 </Button>

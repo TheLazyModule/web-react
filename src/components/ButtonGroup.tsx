@@ -8,8 +8,8 @@ import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 const data = [
     {id: 0, name: "All"},
     {id: 1, name: "Building", img: b1},
-    {id: 2, name: "Places", img: p1},
     {id: 3, name: "Classroom", img: c1},
+    {id: 2, name: "Places", img: p1},
 ];
 
 const ButtonGroup = () => {

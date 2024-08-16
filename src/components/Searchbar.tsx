@@ -30,8 +30,8 @@ const Searchbar = () => {
 
 
     const handleOptionSelect = (value: OptionValue) => {
-        setTo('')
-        setFrom('')
+        setFrom({} as OptionValue);
+        setTo({} as OptionValue);
         setSearchTextTo('')
         setSearchTextFrom('')
         setLocationName(value.name);
