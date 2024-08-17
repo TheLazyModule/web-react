@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {AiOutlineClose, AiOutlineMenu} from 'react-icons/ai';
 import {NavLink, useLocation} from 'react-router-dom';
+import {Button} from "@/components/ui/button.tsx";
 
 const Navbar = () => {
     // State to manage the navbar's visibility
@@ -33,9 +34,11 @@ const Navbar = () => {
                         <NavLink  key={item.id} to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
                             <li
                                 key={item.id}
-                                className={ `p-3 ${currentLocation? 'text-green-800 hover:bg-green-700 hover:text-white': 'text-white hover:bg-white hover:text-green-700'}  hover:font-bold   rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem]` }
+                                className={ `p-3   hover:text-white': 'text-white  hover:text-green-700'}  hover:font-bold   rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem]` }
                             >
-                                {item.text}
+                                <Button variant='link' className={ `${currentLocation? '': 'text-black'} text-secondary text-xl font-semibold hover:font-extrabold` }>
+                                    {item.text}
+                                </Button>
                             </li>
                         </NavLink>
                     ))
