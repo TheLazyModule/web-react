@@ -32,7 +32,7 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
 
     useEffect(() => {
         if (liveLocation)
-            console.log("live location",liveLocation)
+            console.log("live location", liveLocation)
     }, [liveLocation]);
 
     useEffect(() => {
@@ -50,7 +50,7 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
     };
 
 
-    return userMarkerLocation || ( liveLocation as LatLngTuple ).length > 0     ? (
+    return userMarkerLocation || (liveLocation as LatLngTuple).length > 0 ? (
         <Marker
             icon={markerIconGreen}
             draggable
