@@ -1,14 +1,16 @@
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import { LatLngExpression, LatLngLiteral, LatLngTuple } from "leaflet";
-import { Marker, Popup, useMapEvents } from "react-leaflet";
-import { markerIconGreen } from "@/constants/constants.ts";
-import { useEffect } from "react";
+import useLocationStore from "@/hooks/useLocationStore.ts";
+import {LatLngExpression, LatLngLiteral, LatLngTuple} from "leaflet";
+import {Marker, Popup, useMapEvents} from "react-leaflet";
+import {markerIconGreen} from "@/constants/constants.ts";
+import {useEffect} from "react";
 
-const ClickMarker = ({ firstCoordinate }: { firstCoordinate: LatLngLiteral | LatLngTuple | null; }) => {
+const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLngTuple | null; }) => {
     const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
     const setLocationGeom = useLocationQueryStore((s) => s.setSingleLocationGeom);
+    const liveLocation = useLocationStore(s => s.liveLocationLatLng)
     const setFrom = useLocationQueryStore((s) => s.setFrom);
     const locationQueryFrom = useLocationQueryStore((s) => s.locationQuery.from);
 
@@ -24,9 +26,14 @@ const ClickMarker = ({ firstCoordinate }: { firstCoordinate: LatLngLiteral | Lat
             setLocationGeom('');
             setUserMarkerLocation(e.latlng);
             setFromLocation(newLocation);
-            setFrom({ category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location" });
+            setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
         },
     });
+
+    useEffect(() => {
+        if (liveLocation)
+            console.log("live location",liveLocation)
+    }, [liveLocation]);
 
     useEffect(() => {
         if (firstCoordinate) {
@@ -39,15 +46,16 @@ const ClickMarker = ({ firstCoordinate }: { firstCoordinate: LatLngLiteral | Lat
         const newLocation = `POINT(${latlng?.lng} ${latlng?.lat})`;
         setUserMarkerLocation(latlng);
         setFromLocation(newLocation);
-        setFrom({ category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location" });
+        setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
     };
 
-    return userMarkerLocation ? (
+
+    return userMarkerLocation || ( liveLocation as LatLngTuple ).length > 0     ? (
         <Marker
             icon={markerIconGreen}
             draggable
-            position={userMarkerLocation as LatLngExpression}
-            eventHandlers={{ dragend: handleMarkerDragEnd }}
+            position={userMarkerLocation || liveLocation}
+            eventHandlers={{dragend: handleMarkerDragEnd}}
         >
             <Popup>I'm here!</Popup>
         </Marker>

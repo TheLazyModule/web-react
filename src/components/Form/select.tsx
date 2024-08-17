@@ -44,7 +44,7 @@ const ComboBox = ({type}: { type: string }) => {
     }, [isFetched, error]);
 
     useEffect(() => {
-        if (locationQuery.from && locationQuery.to && locationQuery.from === locationQuery.to)
+        if (locationQuery.from?.name && locationQuery.to?.name && locationQuery.from.name === locationQuery.to.name)
             toast.error("Location and Destination cannot be the same");
     }, [locationQuery]);
 
