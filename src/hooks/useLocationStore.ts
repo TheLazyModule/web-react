@@ -48,7 +48,7 @@ const useLocationQueryStore = create<LocationQueryStore>((set) => ({
     singleLocation: {name: '', geom: '', image_urls: []},
     userMarkerLocation: null,
     setLiveLocationWkt: (liveLocationWkt: string) => set((store) => ({...store, liveLocationWkt})),
-    setLiveLocationLatLng: (latlng: LatLngExpression) => set((store) => ({...store, liveLocation: latlng})),
+    setLiveLocationLatLng: (latlng: LatLngExpression) => set((store) => ({...store, liveLocationLatLng: latlng})),
     setSelectedCategoryId: (selectedCategoryId: number) => set((store) => ({
         ...store,
         selectedCategoryId: selectedCategoryId

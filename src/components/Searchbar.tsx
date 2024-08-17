@@ -1,11 +1,11 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import {ClipLoader} from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import useSearchLocation from "@/hooks/useSearchLocation.ts";
-import {OptionValue} from "@/constants/constants";
-import {useGeolocated} from "react-geolocated";
-import {LatLngExpression} from "leaflet";
+import { OptionValue, categoriesData } from "@/constants/constants";
+import { useGeolocated } from "react-geolocated";
+import { LatLngExpression } from "leaflet";
 
 const Searchbar = () => {
     const setTo = useLocationQueryStore(s => s.setTo);
@@ -18,22 +18,27 @@ const Searchbar = () => {
     const setImageUrls = useLocationQueryStore(s => s.setLocationImgUrl);
     const setLiveLocationLatLng = useLocationQueryStore(s => s.setLiveLocationLatLng);
     const setLiveLocationWkt = useLocationQueryStore(s => s.setLiveLocationWkt);
+    const [isLiveLocationOn, setIsLiveLocationOn] = useState<boolean>(false);
 
-    const {data, isLoading, isFetched, error} = useSearchLocation();
+    const { data, isLoading, isFetched, error } = useSearchLocation();
 
-    const {coords, isGeolocationAvailable, isGeolocationEnabled} = useGeolocated({
+    const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
         positionOptions: {
             enableHighAccuracy: true,
             maximumAge: 0,
             timeout: Infinity,
         },
         watchPosition: true, // Enable live updates
-        userDecisionTimeout: 5000,
-        onError: (error) => {
-            toast.error(`Geolocation error: ${error?.message}`);
+        userDecisionTimeout: 9000,
+        onError: () => {
+            toast.error(`Geolocation error ${error?.message}`);
         },
         onSuccess: (position) => {
-            const {latitude, longitude} = position.coords;
+            if (!isLiveLocationOn) {
+                toast.success('Live location on! 🌍');
+                setIsLiveLocationOn(true);
+            }
+            const { latitude, longitude } = position.coords;
             const latlng: LatLngExpression = [latitude, longitude];
             const newLiveLocation = `POINT(${longitude} ${latitude})`;
             setLiveLocationLatLng(latlng);
@@ -85,7 +90,7 @@ const Searchbar = () => {
         } else if (!isGeolocationEnabled) {
             toast.error("Geolocation is not enabled.");
         } else if (coords) {
-            const {latitude, longitude} = coords;
+            const { latitude, longitude } = coords;
             const latlng: LatLngExpression = [latitude, longitude];
             const newLiveLocation = `POINT(${longitude} ${latitude})`;
             setLiveLocationLatLng(latlng);
@@ -135,7 +140,12 @@ const Searchbar = () => {
                                     className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
                                 >
                                     <div className="flex justify-between items-center w-full">
-                                        <div>{r.name}</div>
+                                        <div className="flex flex-row justify-between w-full ">
+                                            <img src={categoriesData.find(c => c.id === r.category_id)?.img}
+                                                 className='h-5'
+                                                 alt="" />
+                                            <span>{r.name}</span>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -151,7 +161,7 @@ const Searchbar = () => {
                                 className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">
                                 <div className="flex flex-row justify-between items-center w-full">
                                     <div>
-                                        <ClipLoader size={20} color={"#4F6F52"} loading={isLoading}/>
+                                        <ClipLoader size={20} color={"#4F6F52"} loading={isLoading} />
                                     </div>
                                 </div>
                             </div>
