@@ -1,6 +1,6 @@
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import useLocationStore from "@/hooks/useLocationStore.ts";
-import {LatLngExpression, LatLngLiteral, LatLngTuple} from "leaflet";
+import {LatLngLiteral, LatLngTuple} from "leaflet";
 import {Marker, Popup, useMapEvents} from "react-leaflet";
 import {markerIconGreen} from "@/constants/constants.ts";
 import {useEffect} from "react";

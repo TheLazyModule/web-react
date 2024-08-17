@@ -1,7 +1,7 @@
-import img_1 from "../assets/campus_images/1hero.png"
-import img_2 from "../assets/campus_images/2hero.png"
-import img_3 from "../assets/campus_images/3hero.png"
-import img_4 from "../assets/campus_images/girck_1.jpg"
+import img_1 from "../assets/campus_images/1hero.webp"
+import img_2 from "../assets/campus_images/2hero.webp"
+import img_3 from "../assets/campus_images/3hero.webp"
+import img_4 from "../assets/campus_images/girck_1.webp"
 
 
 const heroData: string[] = [
