@@ -90,11 +90,11 @@ function Form() {
                                 <ComboBox type='from'  {...register("from", {required: true})} />
                                 {errors.from && <h5 className='text-red-700/20'><span>You missed this field</span></h5>}
                             </div>
-                            <div className='flex flex-col justify-center items-center'>
+                            <div className='flex flex-col justify-center items-center  '>
                                 <Button type='button'
-                                        className=' border-0 hover:bg-muted hover:rounded-3xl'
+                                        className=' bg-white  border-0 hover:bg-muted hover:rounded-3xl'
                                         variant='outline' onClick={handleGeolocationClick}>
-                                    <MdMyLocation size={26} className='text-blue-700 mx-2 cursor-pointer'/>
+                                    <MdMyLocation size={26} className='text-blue-700 mx-2  cursor-pointer'/>
                                 </Button>
                             </div>
                         </LabelInputContainer>

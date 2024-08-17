@@ -5,6 +5,7 @@ import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
 import {OptionValue, UserLocation} from "@/constants/constants.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
+import {categoriesData} from "@/components/ButtonGroup.tsx";
 
 const ComboBox = ({type}: { type: string }) => {
     const setFrom = useLocationQueryStore(s => s.setFrom);
@@ -128,7 +129,7 @@ const ComboBox = ({type}: { type: string }) => {
 
                     {dropdownVisible && isFetched && searchText && searchText.length >= 2 && (
                         <div
-                            className="absolute z-50 w-[70%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
+                            className="absolute z-50 w-[58%] bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                             <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
                                 {categoryContent && categoryContent?.map((r) => (
                                     <div
@@ -137,7 +138,12 @@ const ComboBox = ({type}: { type: string }) => {
                                         className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
                                     >
                                         <div className="flex justify-between items-center w-full">
-                                            <div>{r.name}</div>
+                                            <div className="flex flex-row justify-between w-full ">
+                                                <img src={categoriesData.find(c => c.id === r.category_id)?.img}
+                                                     className='h-5'
+                                                     alt=""/>
+                                                <span>{r.name}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

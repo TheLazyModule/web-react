@@ -5,11 +5,11 @@ import b1 from "@/assets/b2.svg";
 import {useState} from "react";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 
-const data = [
+export const categoriesData = [
     {id: 0, name: "All"},
     {id: 1, name: "Building", img: b1},
-    {id: 3, name: "Classroom", img: c1},
     {id: 2, name: "Places", img: p1},
+    {id: 3, name: "Classroom", img: c1},
 ];
 
 const ButtonGroup = () => {
@@ -24,7 +24,7 @@ const ButtonGroup = () => {
     return (
         <div
             className="mb-8 inline-flex -space-x-0 divide-x  divide-gray-300 overflow-hidden rounded-2xl border border-gray-300 shadow-sm">
-            {data.map((s) => (
+            {categoriesData.map((s) => (
                 <Button
                     onClick={() => handleSelectCategory(s.id)}
                     key={s.id}
