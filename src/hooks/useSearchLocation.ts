@@ -6,7 +6,7 @@ import {OptionValue} from "@/constants/constants.ts";
 
 const apiClient = new APIClient<OptionValue[]>("/all/search");
 
-const useLocation = () => {
+const useSearchLocation = () => {
     const location = useLocationQueryStore(s => s.singleLocation);
 
     return useQuery<OptionValue[]>({
@@ -27,4 +27,4 @@ const useLocation = () => {
     });
 };
 
-export default useLocation;
+export default useSearchLocation;

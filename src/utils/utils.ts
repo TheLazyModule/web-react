@@ -1,4 +1,4 @@
-import { LatLngExpression } from "leaflet";
+import {LatLngExpression} from "leaflet";
 import parse from "wellknown";
 
 export const parsePoint = (pointGeom: string | undefined): LatLngExpression | null => {
@@ -10,5 +10,16 @@ export const parsePoint = (pointGeom: string | undefined): LatLngExpression | nu
     }
     return null;
 };
+
+export function estimateWalkingTime(distanceMeters: number | null): number {
+    if (distanceMeters === null) return 0;
+
+    const walkingSpeedMetersPerSecond = 1.4; // Average walking speed in meters per second
+    const timeInSeconds = distanceMeters / walkingSpeedMetersPerSecond;
+    const timeInMinutes = timeInSeconds / 60;
+
+    // Cap the time at 60 minutes and round to the nearest minute
+    return Math.round(Math.min(timeInMinutes, 60));
+}
 
 export default parsePoint;

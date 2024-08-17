@@ -2,10 +2,9 @@ import {useEffect, useRef, useState} from "react";
 import useSearchText from "@/hooks/useSearchTextFrom.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import useSearchTextTo from "@/hooks/useSearchTextTo.ts";
-import {OptionValue, UserLocation} from "@/constants/constants.ts";
+import {categoriesData, OptionValue, UserLocation} from "@/constants/constants.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
-import {categoriesData} from "@/components/ButtonGroup.tsx";
 
 const ComboBox = ({type}: { type: string }) => {
     const setFrom = useLocationQueryStore(s => s.setFrom);
@@ -119,7 +118,7 @@ const ComboBox = ({type}: { type: string }) => {
                             </svg>
                         </div>
                         <input
-                            className="py-3 ps-10 pe-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                            className=" bg-input py-3 ps-10 pe-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                             type="text"
                             placeholder="Type your location"
                             value={searchText}

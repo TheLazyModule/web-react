@@ -4,6 +4,7 @@ import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
 import {markerIconRed} from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
+import {estimateWalkingTime} from "@/utils/utils.ts";
 
 interface RenderPolylineProps {
     polyline: LatLngExpression[];
@@ -144,7 +145,9 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
 
             {popupPosition && selected && ( // Show the popup only if selected and the position is set
                 <Popup position={popupPosition}>
-                    <div>Polyline clicked!</div>
+                    <div><p className='font-bold'>Should take
+                        about {estimateWalkingTime(estimatedDistance) === 0 ? "less than a minute" : `${estimateWalkingTime(estimatedDistance)}m`}</p>
+                    </div>
                 </Popup>
             )}
 

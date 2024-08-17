@@ -1,16 +1,8 @@
 import {Button} from "@/components/ui/button.tsx";
-import p1 from "@/assets/p1.svg";
-import c1 from "@/assets/c1.svg";
-import b1 from "@/assets/b2.svg";
 import {useState} from "react";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
+import {categoriesData} from "@/constants/constants.ts";
 
-export const categoriesData = [
-    {id: 0, name: "All"},
-    {id: 1, name: "Building", img: b1},
-    {id: 2, name: "Places", img: p1},
-    {id: 3, name: "Classroom", img: c1},
-];
 
 const ButtonGroup = () => {
     const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);

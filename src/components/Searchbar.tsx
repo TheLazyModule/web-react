@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import {ClipLoader} from "react-spinners";
 import toast from "react-hot-toast";
-import useLocation from "@/hooks/useLocation.ts";
+import useSearchLocation from "@/hooks/useSearchLocation.ts";
 import {OptionValue} from "@/constants/constants";
 import {useGeolocated} from "react-geolocated";
 import {LatLngExpression} from "leaflet";
@@ -19,7 +19,7 @@ const Searchbar = () => {
     const setLiveLocationLatLng = useLocationQueryStore(s => s.setLiveLocationLatLng);
     const setLiveLocationWkt = useLocationQueryStore(s => s.setLiveLocationWkt);
 
-    const {data, isLoading, isFetched, error} = useLocation();
+    const {data, isLoading, isFetched, error} = useSearchLocation();
 
     const {coords, isGeolocationAvailable, isGeolocationEnabled} = useGeolocated({
         positionOptions: {
