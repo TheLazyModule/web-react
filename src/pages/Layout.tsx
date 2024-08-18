@@ -32,7 +32,7 @@ const Layout = () => {
                          style: {
                              paddingInline: 30,
                              paddingBlock: 20,
-                             zIndex: 1000000000
+                             zIndex: 100000
                          }
 
                      }}

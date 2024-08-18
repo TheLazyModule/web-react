@@ -13,6 +13,8 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
     const liveLocation = useLocationStore(s => s.liveLocationLatLng)
     const setFrom = useLocationQueryStore((s) => s.setFrom);
     const locationQueryFrom = useLocationQueryStore((s) => s.locationQuery.from);
+    const setLiveLocationWkt = useLocationQueryStore(s => s.setLiveLocationWkt);
+    const setLiveLocationLatLng = useLocationQueryStore(s => s.setLiveLocationLatLng);
 
     useMapEvents({
         click(e) {
@@ -27,6 +29,8 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
             setUserMarkerLocation(e.latlng);
             setFromLocation(newLocation);
             setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
+            setLiveLocationLatLng([] as unknown as LatLngTuple);
+            setLiveLocationWkt('');
         },
     });
 
@@ -47,15 +51,17 @@ const ClickMarker = ({firstCoordinate}: { firstCoordinate: LatLngLiteral | LatLn
         setUserMarkerLocation(latlng);
         setFromLocation(newLocation);
         setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
+        setLiveLocationLatLng([] as unknown as LatLngTuple);
+        setLiveLocationWkt('');
     };
 
 
-    return userMarkerLocation || (liveLocation as LatLngTuple).length > 0 ? (
+    return (userMarkerLocation || (liveLocation && (liveLocation as LatLngTuple).length > 0)) ? (
         <Marker
             icon={markerIconGreen}
             draggable
             position={userMarkerLocation || liveLocation}
-            eventHandlers={{dragend: handleMarkerDragEnd}}
+            eventHandlers={{ dragend: handleMarkerDragEnd }}
         >
             <Popup>I'm here!</Popup>
         </Marker>

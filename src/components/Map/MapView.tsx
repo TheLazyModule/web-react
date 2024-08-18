@@ -121,10 +121,10 @@ const MapView = () => {
                                 <Popup minWidth={200} maxWidth={500}>
                                     <div className="flex flex-col h-full w-full">
                                         <p className="text-lg font-bold">{building.name}</p>
-                                        {building.img_urls && building.img_urls[0] && (
+                                        {building.image_urls && building.image_urls.length > 0 && building.image_urls[0] && (
                                             <div className="flex-1">
                                                 <img
-                                                    src={building.img_urls[0]}
+                                                    src={building.image_urls[0]}
                                                     alt={building.name}
                                                     className="w-full h-full object-cover"
                                                 />

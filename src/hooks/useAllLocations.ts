@@ -14,7 +14,7 @@ export interface AllLocations {
         name: string;
         longitude: number;
         latitude: number;
-        img_urls: string[];
+        image_urls: string[];
         category_id: number;
     }[]
 }

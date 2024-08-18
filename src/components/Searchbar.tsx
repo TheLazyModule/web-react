@@ -3,48 +3,20 @@ import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import useSearchLocation from "@/hooks/useSearchLocation.ts";
-import { OptionValue, categoriesData } from "@/constants/constants";
-import { useGeolocated } from "react-geolocated";
-import { LatLngExpression } from "leaflet";
+import { categoriesData, OptionValue } from "@/constants/constants";
 
 const Searchbar = () => {
-    const setTo = useLocationQueryStore(s => s.setTo);
-    const setFrom = useLocationQueryStore(s => s.setFrom);
-    const setSearchTextTo = useLocationQueryStore(s => s.setSearchTextTo);
-    const setSearchTextFrom = useLocationQueryStore(s => s.setSearchTextFrom);
-    const locationName = useLocationQueryStore(s => s.singleLocation?.name);
-    const setLocationName = useLocationQueryStore(s => s.setLocationName);
-    const setLocationGeom = useLocationQueryStore(s => s.setSingleLocationGeom);
-    const setImageUrls = useLocationQueryStore(s => s.setLocationImgUrl);
-    const setLiveLocationLatLng = useLocationQueryStore(s => s.setLiveLocationLatLng);
-    const setLiveLocationWkt = useLocationQueryStore(s => s.setLiveLocationWkt);
-    const [isLiveLocationOn, setIsLiveLocationOn] = useState<boolean>(false);
+    const setTo = useLocationQueryStore((s) => s.setTo);
+    const setFrom = useLocationQueryStore((s) => s.setFrom);
+    const setSearchTextTo = useLocationQueryStore((s) => s.setSearchTextTo);
+    const setSearchTextFrom = useLocationQueryStore((s) => s.setSearchTextFrom);
+    const locationName = useLocationQueryStore((s) => s.singleLocation?.name);
+    const setLocationName = useLocationQueryStore((s) => s.setLocationName);
+    const setLocationGeom = useLocationQueryStore((s) => s.setSingleLocationGeom);
+    const setImageUrls = useLocationQueryStore((s) => s.setLocationImgUrl);
+
 
     const { data, isLoading, isFetched, error } = useSearchLocation();
-
-    const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
-        positionOptions: {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-            timeout: Infinity,
-        },
-        watchPosition: true, // Enable live updates
-        userDecisionTimeout: 9000,
-        onError: () => {
-            toast.error(`Geolocation error ${error?.message}`);
-        },
-        onSuccess: (position) => {
-            if (!isLiveLocationOn) {
-                toast.success('Live location on! 🌍');
-                setIsLiveLocationOn(true);
-            }
-            const { latitude, longitude } = position.coords;
-            const latlng: LatLngExpression = [latitude, longitude];
-            const newLiveLocation = `POINT(${longitude} ${latitude})`;
-            setLiveLocationLatLng(latlng);
-            setLiveLocationWkt(newLiveLocation);
-        },
-    });
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -58,8 +30,8 @@ const Searchbar = () => {
     const handleOptionSelect = (value: OptionValue) => {
         setFrom({} as OptionValue);
         setTo({} as OptionValue);
-        setSearchTextTo('');
-        setSearchTextFrom('');
+        setSearchTextTo("");
+        setSearchTextFrom("");
         setLocationName(value.name);
         setImageUrls(value.image_urls);
         setLocationGeom(value.geom);
@@ -84,23 +56,10 @@ const Searchbar = () => {
         };
     }, []);
 
-    useEffect(() => {
-        if (!isGeolocationAvailable) {
-            toast.error("Geolocation is not supported by this browser.");
-        } else if (!isGeolocationEnabled) {
-            toast.error("Geolocation is not enabled.");
-        } else if (coords) {
-            const { latitude, longitude } = coords;
-            const latlng: LatLngExpression = [latitude, longitude];
-            const newLiveLocation = `POINT(${longitude} ${latitude})`;
-            setLiveLocationLatLng(latlng);
-            setLiveLocationWkt(newLiveLocation);
-        }
-    }, [coords, isGeolocationAvailable, isGeolocationEnabled]);
-
     return (
         <div
-            className="absolute z-[1000000] left-[5.4rem] md:left-[30rem] top-[15px] border rounded-xl p-1 w-[14rem] md:w-[30rem] bg-white shadow-sm">
+            className="absolute z-[10000] left-[5.4rem] md:left-[30rem] top-[15px] border rounded-xl p-1 w-[14rem] md:w-[30rem] bg-white shadow-sm"
+        >
             <div className="max-w-lg" ref={dropdownRef}>
                 <div className="relative">
                     <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-3.5">
@@ -133,22 +92,25 @@ const Searchbar = () => {
                     <div
                         className="absolute z-50 w-full bg-white rounded-xl shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)] dark:bg-neutral-800">
                         <div className="max-h-[300px] p-2 rounded-b-xl overflow-y-auto">
-                            {data && data.map((r) => (
-                                <div
-                                    key={r.id}
-                                    onClick={() => handleOptionSelect(r)}
-                                    className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
-                                >
-                                    <div className="flex justify-between items-center w-full">
-                                        <div className="flex flex-row justify-between w-full ">
-                                            <img src={categoriesData.find(c => c.id === r.category_id)?.img}
-                                                 className='h-5'
-                                                 alt="" />
-                                            <span>{r.name}</span>
+                            {data &&
+                                data.map((r) => (
+                                    <div
+                                        key={r.id}
+                                        onClick={() => handleOptionSelect(r)}
+                                        className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
+                                    >
+                                        <div className="flex justify-between items-center w-full">
+                                            <div className="flex flex-row justify-between w-full ">
+                                                <img
+                                                    src={categoriesData.find((c) => c.id === r.category_id)?.img}
+                                                    className="h-5"
+                                                    alt=""
+                                                />
+                                                <span>{r.name}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </div>
                 )}
@@ -161,7 +123,7 @@ const Searchbar = () => {
                                 className="cursor-pointer p-2 space-y-0.5 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">
                                 <div className="flex flex-row justify-between items-center w-full">
                                     <div>
-                                        <ClipLoader size={20} color={"#4F6F52"} loading={isLoading} />
+                                        <ClipLoader size={20} color={"#4F6F52"} loading={isLoading}/>
                                     </div>
                                 </div>
                             </div>
