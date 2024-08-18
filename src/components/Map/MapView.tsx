@@ -84,22 +84,6 @@ const MapView = () => {
                     {parsedLocation && !locationQuery.from?.name && !locationQuery.to?.name && (
                         <>
                             <FlyToLocation location={parsedLocation}/>
-                            {/*<Marker icon={markerIconGreen} draggable position={parsedLocation}>*/}
-                            {/*    <Popup minWidth={200} maxWidth={500}>*/}
-                            {/*        <div className="flex flex-col h-full w-full">*/}
-                            {/*            <p className="text-lg font-bold">{location?.name}</p>*/}
-                            {/*            {location?.image_urls && location?.image_urls[0] && (*/}
-                            {/*                <div className="flex-1">*/}
-                            {/*                    <img*/}
-                            {/*                        src={location.image_urls[0]}*/}
-                            {/*                        alt={location.name}*/}
-                            {/*                        className="w-full h-full object-cover"*/}
-                            {/*                    />*/}
-                            {/*                </div>*/}
-                            {/*            )}*/}
-                            {/*        </div>*/}
-                            {/*    </Popup>*/}
-                            {/*</Marker>*/}
                         </>
                     )}
 
@@ -112,28 +96,22 @@ const MapView = () => {
                                             fillOpacity: 0.8,
                                         }}
                     >
-                        {allLocations?.buildings.map((building, index) => (
-                            <Marker
-                                key={index}
-                                position={[building.latitude, building.longitude]}
-                                icon={buildingIcon}
-                            >
-                                <Popup minWidth={200} maxWidth={500}>
-                                    <div className="flex flex-col h-full w-full">
-                                        <p className="text-lg font-bold">{building.name}</p>
-                                        {building.image_urls && building.image_urls.length > 0 && building.image_urls[0] && (
-                                            <div className="flex-1">
-                                                <img
-                                                    src={building.image_urls[0]}
-                                                    alt={building.name}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
+                        {allLocations?.buildings.map((building, index) =>
+                            building.latitude && building.longitude ? (
+                                <Marker
+                                    key={index}
+                                    position={[building.latitude, building.longitude]}
+                                    icon={buildingIcon}
+                                >
+                                    <Popup>
+                                        <p>{building.name}</p>
+                                        {building.image_urls && building.image_urls[0] && (
+                                            <img src={building.image_urls[0]} alt={building.name}/>
                                         )}
-                                    </div>
-                                </Popup>
-                            </Marker>
-                        ))}
+                                    </Popup>
+                                </Marker>
+                            ) : null
+                        )}
 
                         {allLocations?.places.map((place, index) => (
                             <Marker

@@ -34,9 +34,9 @@ const Navbar = () => {
                         <NavLink  key={item.id} to={item.text.toLowerCase() === 'home' ? '/' : `/${item.text.toLowerCase()}`}>
                             <li
                                 key={item.id}
-                                className={ `p-3   hover:text-white': 'text-white  hover:text-green-700'}  hover:font-bold   rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem]` }
+                                className={ `p-3   hover:text-white': ' text-white  hover:text-green-700'}  hover:font-bold   rounded-xl m-2 cursor-pointer duration-500   sm:text-[0.5rem] md:text-[1.2rem]` }
                             >
-                                <Button variant='link' className={ `${currentLocation? '': 'text-black'} text-secondary text-xl font-semibold hover:font-extrabold` }>
+                                <Button variant='link' className={ `${currentLocation? 'text-black': 'text-secondary'}  text-xl font-semibold hover:font-extrabold` }>
                                     {item.text}
                                 </Button>
                             </li>

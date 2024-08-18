@@ -26,13 +26,13 @@ const Layout = () => {
     // Render  layout content once loading is complete
     return (
         <div className={`${currentLocation === 'contact' ? 'bg-[#F5EFE6]' : ''}`}>
-            <Toaster position="top-right"
+            <Toaster position="bottom-right"
                      reverseOrder={false}
                      toastOptions={{
                          style: {
                              paddingInline: 30,
                              paddingBlock: 20,
-                             zIndex: 100000
+                             zIndex: 1000000
                          }
 
                      }}

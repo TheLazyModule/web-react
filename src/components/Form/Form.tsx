@@ -58,7 +58,7 @@ function Form() {
 
     return (
         <div
-            className="max-w-md w-full mx-auto font-bai rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+            className="max-w-md w-full mx-auto font-bai rounded-none md:rounded-2xl  md:p-10 shadow-input bg-white dark:bg-black">
             <h2 className="font-bold text-neutral-800 text-2xl dark:text-neutral-200">
                 Welcome <br/>to Find My classroom
             </h2>
@@ -66,7 +66,7 @@ function Form() {
                 Where do you want to go?
             </p>
 
-            <form className="my-8 flex flex-col justify-center items-center" onSubmit={handleSubmit(onSubmit)}>
+            <form className="my-8  flex flex-col justify-center items-center" onSubmit={handleSubmit(onSubmit)}>
                 <ButtonGroup/>
                 <div className="flex flex-row space-y-2 md:space-y-0 mb-4">
                     <div className='items-center'>
@@ -77,14 +77,14 @@ function Form() {
                         <IoLocationOutline size={25} color='red'/>
                     </div>
                     <div>
-                        <LabelInputContainer className='flex flex-row mb-12 ml-3'>
+                        <LabelInputContainer className='flex flex-row mb-12 ml-3 w-full'>
                             <div className='flex flex-col'>
                                 <ComboBox type='from'  {...register("from", {required: true})} />
                                 {errors.from && <h5 className='text-red-700/20'><span>You missed this field</span></h5>}
                             </div>
-                            <div className='flex flex-col justify-center items-center  '>
+                            <div className='flex flex-col justify-center items-center  mx-2'>
                                 <Button type='button'
-                                        className=' bg-white  border-0 hover:bg-muted hover:rounded-3xl'
+                                        className=' bg-white p-0 border-0 hover:bg-muted hover:rounded-3xl'
                                         variant='outline' onClick={handleGeolocationClick}>
                                     <MdMyLocation size={26} className='text-blue-700 mx-2  cursor-pointer'/>
                                 </Button>
@@ -96,7 +96,7 @@ function Form() {
                                 {errors.to && <h5 className='text-red-700/50'><span>You missed this field</span></h5>}
                             </div>
                             <div className='flex flex-col justify-center items-center'>
-                                <div className='mx-9'></div>
+                                <div className='mx-2'></div>
 
                             </div>
                         </LabelInputContainer>
