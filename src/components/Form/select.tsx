@@ -61,7 +61,6 @@ const ComboBox = ({type}: { type: string }) => {
             setFrom(value)
         } else {
             setTo(value)
-
         }
         setDropdownVisible(false);
     };
@@ -82,7 +81,11 @@ const ComboBox = ({type}: { type: string }) => {
 
 
     const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        if (
+            dropdownRef.current &&
+            !dropdownRef.current.contains(event.target) &&
+            !event.target.closest('.button-group') // Ensure clicks inside ButtonGroup don't close the dropdown
+        ) {
             setDropdownVisible(false);
         }
     };

@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useGeolocated} from "react-geolocated";
 import {LatLngExpression, LatLngTuple} from "leaflet";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ const useLiveLocation = () => {
     const setLiveLocationWkt = useLocationQueryStore((s) => s.setLiveLocationWkt);
     const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
     const setFrom = useLocationQueryStore((s) => s.setFrom);
+    const [geolocatedCoords, setGeolocatedCoords] = useState<LatLngExpression | null>(null);
 
     const isLiveLocationOnRef = useRef<boolean>(false);
 
@@ -33,6 +34,7 @@ const useLiveLocation = () => {
             }
             const {latitude, longitude} = position.coords;
             const latlng: LatLngExpression = [latitude, longitude];
+            setGeolocatedCoords(latlng);
             const newLiveLocation = `POINT(${longitude} ${latitude})`;
             setLiveLocationLatLng(latlng);
             setLiveLocationWkt(newLiveLocation);
@@ -42,21 +44,21 @@ const useLiveLocation = () => {
     useEffect(() => {
         if (!isGeolocationAvailable) {
             toast.error("Geolocation is not supported by this browser.");
-        } else if (!isGeolocationEnabled) {
+        } else if (!isGeolocationEnabled && !isLiveLocationOnRef.current) {
             toast.error("Geolocation is not enabled.");
             setFromLocation('');
             setFrom({} as OptionValue);
             setLiveLocationLatLng([] as unknown as LatLngTuple);
             setLiveLocationWkt("");
             isLiveLocationOnRef.current = false; // Reset the live location flag
-        } else if (coords) {
-            const {latitude, longitude} = coords;
-            const latlng: LatLngExpression = [latitude, longitude];
-            const newLiveLocation = `POINT(${longitude} ${latitude})`;
+        } else if (coords && geolocatedCoords) {
+            const latlng: LatLngExpression = geolocatedCoords;
+            const newLiveLocation = `POINT(${geolocatedCoords[1]} ${geolocatedCoords[0]})`;
             setLiveLocationLatLng(latlng);
             setLiveLocationWkt(newLiveLocation);
+            setFromLocation(newLiveLocation);
         }
-    }, [coords, isGeolocationAvailable, isGeolocationEnabled, setLiveLocationLatLng, setLiveLocationWkt]);
+    }, [isGeolocationAvailable, isGeolocationEnabled, setLiveLocationLatLng, setLiveLocationWkt]);
 
     // Re-trigger the geolocation request when location services are turned back on
     useEffect(() => {
@@ -65,7 +67,8 @@ const useLiveLocation = () => {
             getPosition();
         }
     }, [isGeolocationEnabled, getPosition]);
-    return {coords, isGeolocationAvailable, isGeolocationEnabled, positionError, getPosition}
+
+    return {coords, isGeolocationAvailable, isGeolocationEnabled, positionError, getPosition, geolocatedCoords}
 };
 
 export default useLiveLocation;

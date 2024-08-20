@@ -23,37 +23,60 @@ function Form() {
 
     const {register, handleSubmit, formState: {errors}} = useForm<IFormInput>();
     const locationQueryFrom = useLocationQueryStore((s) => s.locationQuery.from);
+    const locationQueryTo = useLocationQueryStore((s) => s.locationQuery.to);
     const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
     const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
     const setLocationGeom = useLocationQueryStore((s) => s.setSingleLocationGeom);
-    const liveLocationWkt = useLocationQueryStore(s => s.liveLocationWkt);
     const setLiveLocationWkt = useLocationQueryStore(s => s.setLiveLocationWkt);
     const setLiveLocationLatLng = useLocationQueryStore(s => s.setLiveLocationLatLng);
 
 
-    const {isGeolocationEnabled, coords} = useLiveLocation();
+    const {isGeolocationEnabled, geolocatedCoords} = useLiveLocation();
 
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
         if (data.from && data.to) {
-            setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: data.from});
-            setTo({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: data.to});
+            setFrom({
+                ...locationQueryFrom,
+                category_id: 0,
+                geom: "",
+                id: "",
+                name: data.from
+            });
+            setTo({
+                ...locationQueryTo,
+                category_id: 0,
+                geom: "",
+                id: "",
+                name: data.to
+            });
         }
     };
 
     const handleGeolocationClick = () => {
-        if (!isGeolocationEnabled ) {
+        if (!isGeolocationEnabled) {
             toast.error("Live location not enabled")
             return
         }
-        const latlng: LatLngExpression = [coords?.latitude, coords?.longitude] as LatLngExpression;
-        const newLiveLocation = `POINT(${latlng[0]} ${latlng[1]})`;
-        console.log(newLiveLocation)
-        setLiveLocationLatLng(latlng);
-        setLiveLocationWkt(newLiveLocation);
-        setLocationGeom('')
-        setUserMarkerLocation(null)
-        setFromLocation(liveLocationWkt);
-        setFrom({category_id: 0, geom: "", id: "", ...locationQueryFrom, name: "My Location"});
+        try {
+            if (geolocatedCoords) {
+                const latlng: LatLngExpression = geolocatedCoords;
+                const newLiveLocation = `POINT(${latlng[1]} ${latlng[0]})`;
+                setLiveLocationLatLng(latlng);
+                setLiveLocationWkt(newLiveLocation);
+                setLocationGeom('')
+                setUserMarkerLocation(null)
+                setFromLocation(newLiveLocation);
+                setFrom({
+                    ...locationQueryFrom,
+                    category_id: 0,
+                    geom: "",
+                    id: "",
+                    name: "My Location"
+                });
+            }
+        } catch (e) {
+            toast.error("Failed to get location")
+        }
     };
 
     return (

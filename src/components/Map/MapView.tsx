@@ -44,7 +44,7 @@ const MapView = () => {
     return (
         <div className="relative">
             <Searchbar/>
-            <Sidebar position="left" theme="light"/>
+            <Sidebar position="left" theme="light" polyline={polylineCoordinates}/>
 
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center z-[1000] bg-white bg-opacity-75">
@@ -82,9 +82,7 @@ const MapView = () => {
                     </BaseLayer>
 
                     {parsedLocation && !locationQuery.from?.name && !locationQuery.to?.name && (
-                        <>
-                            <FlyToLocation location={parsedLocation}/>
-                        </>
+                        <FlyToLocation location={parsedLocation}/>
                     )}
 
                     <MarkerClusterGroup chunkedLoading maxClusterRadius={70} spiderfyOnMaxZoom
@@ -102,12 +100,23 @@ const MapView = () => {
                                     key={index}
                                     position={[building.latitude, building.longitude]}
                                     icon={buildingIcon}
+                                    riseOnHover
+                                    eventHandlers={{
+                                        mouseover: (e) => {
+                                            e.target.openPopup();
+                                        },
+                                        mouseout: (e) => {
+                                            e.target.closePopup();
+                                        }
+                                    }}
                                 >
-                                    <Popup>
-                                        <p>{building.name}</p>
-                                        {building.image_urls && building.image_urls[0] && (
-                                            <img src={building.image_urls[0]} alt={building.name}/>
-                                        )}
+                                    <Popup closeOnEscapeKey>
+                                        <div className='border-[0.1rem] border-primary rounded-xl px-3'>
+                                            <p className='font-medium text-lg '>{building.name}</p>
+                                            {building.image_urls && building.image_urls[0] && (
+                                                <img src={building.image_urls[0]} alt={building.name}/>
+                                            )}
+                                        </div>
                                     </Popup>
                                 </Marker>
                             ) : null
@@ -115,13 +124,23 @@ const MapView = () => {
 
                         {allLocations?.places.map((place, index) => (
                             <Marker
+                                riseOnHover
                                 key={index}
                                 position={[place.latitude, place.longitude]}
                                 icon={placeIcon}
+                                eventHandlers={{
+                                    mouseover: (e) => {
+                                        e.target.openPopup();
+                                    },
+                                    mouseout: (e) => {
+                                        e.target.closePopup();
+                                    }
+                                }}
                             >
-                                <Popup minWidth={200} maxWidth={500}>
-                                    <div className="flex flex-col h-full w-full">
-                                        <p className="text-lg font-bold">{place.name}</p>
+                                <Popup minWidth={200} maxWidth={500} closeOnEscapeKey>
+                                    <div
+                                        className="flex flex-col h-full w-full justify-center items-center border-[0.1rem] border-primary rounded-xl px-3">
+                                        <p className="text-lg font-medium">{place.name}</p>
                                     </div>
                                 </Popup>
                             </Marker>
@@ -137,12 +156,11 @@ const MapView = () => {
                         />
                     )}
 
-                    <ClickMarker firstCoordinate={firstCoordinate}/>
+                    <ClickMarker/>
                 </LayersControl>
             </MapContainer>
         </div>
-    )
-        ;
+    );
 };
 
 export default MapView;

@@ -13,9 +13,14 @@ const ButtonGroup = () => {
         setSelectedCategoryStore(id);
     };
 
+    const handleButtonGroupClick = (e) => {
+        e.stopPropagation(); // Prevents the dropdown from closing
+    };
+
     return (
         <div
-            className="mb-8 inline-flex -space-x-0 divide-x  divide-gray-300 overflow-hidden rounded-2xl border border-gray-300 shadow-sm">
+            onClick={handleButtonGroupClick}  // Add this event handler
+            className="button-group mb-8 inline-flex -space-x-0 divide-x divide-gray-300 overflow-hidden rounded-2xl border border-gray-300 shadow-sm">
             {categoriesData.map((s) => (
                 <Button
                     onClick={() => handleSelectCategory(s.id)}

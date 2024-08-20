@@ -1,11 +1,24 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import './Sidebar.css';
 import Form from '../Form/Form';
 import {SiGoogleclassroom} from "react-icons/si";
+import {LatLngExpression} from "leaflet";
 
-const Sidebar = ({position = 'left', theme = 'light'}) => {
+interface SidebarProps {
+    position: 'left' | 'right';
+    theme: 'light' | 'dark';
+    polyline: LatLngExpression[];
+}
+
+const Sidebar = ({position = 'left', theme = 'light', polyline}: SidebarProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
+
+    useEffect(() => {
+        if (polyline && polyline.length > 0) {
+            setIsOpen(false)
+        }
+    }, [polyline, setIsOpen]);
     // Toggle the state of the sidebar
     const toggleSidebar = () => setIsOpen(!isOpen);
 

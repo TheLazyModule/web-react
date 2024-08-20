@@ -9,8 +9,8 @@ export interface All {
 
 
 const axiosInstance = axios.create({
-    baseURL: 'https://routing-server-leaflet.onrender.com/',
-    // baseURL: 'http://localhost:8080/',
+    // baseURL: 'https://routing-server-leaflet.onrender.com/',
+    baseURL: 'http://localhost:8080/',
 })
 
 class APIClient<T> {

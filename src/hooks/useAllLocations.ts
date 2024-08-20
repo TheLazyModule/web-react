@@ -9,7 +9,7 @@ export interface AllLocations {
         longitude: number;
         latitude: number;
         category_id: number;
-    }[];
+    }[],
     buildings: {
         name: string;
         longitude: number;

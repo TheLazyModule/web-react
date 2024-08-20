@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
-import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet';
+import {useEffect, useState} from 'react';
+import {Marker, Polyline, Popup, useMap} from 'react-leaflet';
+import {BsPersonWalking} from "react-icons/bs"
+import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
-import { markerIconRed } from "@/constants/constants.ts";
+import {markerIconRed} from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import { estimateWalkingTime } from "@/utils/utils.ts";
+import parsePoint, {estimateWalkingTime} from "@/utils/utils.ts";
+import {IoAccessibility} from "react-icons/io5";
 
 interface RenderPolylineProps {
     polyline: LatLngExpression[];
@@ -13,14 +15,22 @@ interface RenderPolylineProps {
     estimatedDistance: number | null;
 }
 
-const polylineOptions = { color: "url(#polylineGradient)", weight: 18 }; // Default to gradient
-const clickedPolylineOptions = { color: "url(#polylineHighlightGradient)", weight: 18 }; // Highlighted gradient when clicked
-const dottedPolylineOptions = { color: "#077bd1db", weight: 10, dashArray: '5, 10' };
+const polylineOptions = {color: "url(#polylineGradient)", weight: 14}; // Default to gradient
+const clickedPolylineOptions = {color: "url(#polylineHighlightGradient)", weight: 100}; // Highlighted gradient when clicked
+const dottedPolylineOptions = {color: "url(#polylineGradient)", weight: 8, dashArray: '5, 10'};
 
-const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDistance }: RenderPolylineProps) => {
+
+// Handle all three cases
+// 1. user selected location
+// 2. user clicked location
+// 3. user geolocated location
+const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
-    const setUserMarkerLocation = useLocationQueryStore((s) => s.setUserMarkerLocation);
+    const liveLocation = useLocationQueryStore((s) => s.liveLocationLatLng);
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
+    const fromGeom = parsePoint(useLocationQueryStore((s) => s.locationQuery.from?.geom));
+    const toGeom = parsePoint(useLocationQueryStore((s) => s.locationQuery.to?.geom));
+    const estimatedWalkingTime = estimateWalkingTime(estimatedDistance);
     const map = useMap();
     const flyToDuration = 1.5;
 
@@ -30,8 +40,7 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
     useEffect(() => {
         if (polyline.length > 0) {
             const bounds = L.latLngBounds(polyline); // Create bounds from the polyline
-            map.fitBounds(bounds, { padding: [50, 50] }); // Fit the map to the bounds with padding
-            setUserMarkerLocation(firstCoordinate);
+            map.fitBounds(bounds, {padding: [50, 50]}); // Fit the map to the bounds with padding
         }
     }, [firstCoordinate, map, polyline]);
 
@@ -54,9 +63,22 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
         }
     }, [lastCoordinate, map]);
 
-    const getDottedPolyline = () => {
-        if (firstCoordinate && userMarkerLocation) {
+    const getDottedPolylineStart = () => {
+        if (firstCoordinate && fromGeom) {
+            return [firstCoordinate, fromGeom];
+        } else if (firstCoordinate && userMarkerLocation) {
+            console.log("first", firstCoordinate, "usermarker", userMarkerLocation)
             return [firstCoordinate, userMarkerLocation];
+        } else if (firstCoordinate && liveLocation) {
+            console.log("live location", liveLocation)
+            return [firstCoordinate, liveLocation];
+        }
+        return null;
+    };
+
+    const getDottedPolylineEnd = () => {
+        if (lastCoordinate && toGeom) {
+            return [lastCoordinate, toGeom];
         }
         return null;
     };
@@ -125,10 +147,18 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
     return (
         <>
             {lastCoordinate && estimatedDistance !== null && (
-                <Marker icon={markerIconRed} draggable position={lastCoordinate}>
+                <Marker icon={markerIconRed} interactive position={lastCoordinate}>
                     <Popup>
-                        Destination: {locationQuery?.to?.name} <br />
-                        Distance: {estimatedDistance} meters.
+                        <div className='border-[0.1rem] border-primary rounded-xl px-3'>
+                            <p className='font-medium text-lg '>Here is your Destination <IoAccessibility size={25}
+                                                                                                          className='inline'
+                                                                                                          color='green'/>
+                                <p className='font-bold'>{locationQuery?.to?.name}</p></p>
+                            <p className='font-medium text-lg text '>
+                                Should take
+                                about {estimatedWalkingTime === 0 ? "less than a minute" : `${estimatedWalkingTime} ${estimatedWalkingTime === 0 ? "minute" : "minutes"}`}
+                            </p>
+                        </div>
                     </Popup>
                 </Marker>
             )}
@@ -138,6 +168,20 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
                 pathOptions={{
                     color: selected ? clickedPolylineOptions.color : polylineOptions.color,
                     weight: polylineOptions.weight,
+                    interactive: true, // Ensure the polyline is interactive
+                }}
+                eventHandlers={{
+                    click: handlePolylineClick,
+                }}
+            />
+
+            {/* Invisible wider polyline for increasing hit area */}
+            <Polyline
+                positions={polyline}
+                pathOptions={{
+                    color: 'transparent', // Invisible stroke
+                    weight: polylineOptions.weight + 20, // Increase this value to enlarge the hit area
+                    interactive: true, // Ensure the invisible polyline is interactive
                 }}
                 eventHandlers={{
                     click: handlePolylineClick,
@@ -145,14 +189,36 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
             />
 
             {popupPosition && selected && ( // Show the popup only if selected and the position is set
-                <Popup position={popupPosition}>
-                    <div><p className='font-bold'>Should take about {estimateWalkingTime(estimatedDistance) === 0 ? "less than a minute" : `${estimateWalkingTime(estimatedDistance)}m`}</p></div>
+                <Popup position={popupPosition} className=''>
+                    <div
+                        className='flex flex-row justify-between items-center border-[0.1rem] border-primary rounded-xl px-3'>
+                        <BsPersonWalking color='green' className='mr-3' size={30}/>
+                        <p className='font-medium text-lg text '>
+                            Should take
+                            about {estimatedWalkingTime === 0 ? "less than a minute" : `${estimatedWalkingTime} ${estimatedWalkingTime === 0 ? "minute" : "minutes"}`}
+                        </p>
+                    </div>
                 </Popup>
             )}
 
-            {getDottedPolyline() && (
-                <Polyline positions={getDottedPolyline() as LatLngExpression[]} pathOptions={dottedPolylineOptions} />
+            {getDottedPolylineStart() && (
+                <Polyline positions={getDottedPolylineStart() as LatLngExpression[]}
+                          pathOptions={dottedPolylineOptions}
+                          eventHandlers={{
+                              click: handlePolylineClick,
+                          }}
+                />
+
             )}
+            {getDottedPolylineEnd() && (
+                <Polyline positions={getDottedPolylineEnd() as LatLngExpression[]}
+                          pathOptions={dottedPolylineOptions}
+                          eventHandlers={{
+                              click: handlePolylineClick,
+                          }}
+                />
+            )}
+
         </>
     );
 };
