@@ -74,16 +74,12 @@
     animation: slide-right-two 0.5s ease 0s 1 both;
 }
 
-.sidepanel.sidepanel-right.closed {
-    -webkit-animation: slide-left-two 0.5s ease 0s 1 both;
-    animation: slide-left-two 0.5s ease 0s 1 both;
-}
 
 .sidepanel-inner-wrapper {
     position: absolute;
     left: 0;
     top: 0;
-    width: 100%;
+    width: 350px;
     height: 100%;
     background-color: #ffffff;
     z-index: 10000;
