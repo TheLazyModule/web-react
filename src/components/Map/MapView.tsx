@@ -119,7 +119,7 @@ const MapView = () => {
                                             {building.image_urls && building.image_urls[0] && (
                                                 <img
                                                     src={building.image_urls[0]}
-                                                    className='w-full h-48 object-cover mt-2' // Adjust image height to fit within the popup, maintaining aspect ratio
+                                                    className='w-full rounded-lg h-48 object-cover my-4 '
                                                     alt={building.name}
                                                 />
                                             )}

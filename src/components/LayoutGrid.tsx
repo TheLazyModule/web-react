@@ -14,7 +14,7 @@ export function ImageLayoutGrid({images}) {
     const cards = generateCards(images);
 
     return (
-        <div className="h-screen py-20 w-full">
+        <div className="h-screen w-full">
             <LayoutGrid cards={cards}/>
         </div>
     );

@@ -9,6 +9,7 @@ import parsePoint, {estimateWalkingTime} from "@/utils/utils.ts";
 import {IoAccessibility} from "react-icons/io5";
 import {Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle} from "@/components/ui/drawer";
 import {ImageLayoutGrid} from "@/components/LayoutGrid.tsx";
+import {Skeleton} from "@/components/ui/skeleton"; // Import your SkeletonCard
 
 interface RenderPolylineProps {
     polyline: LatLngExpression[];
@@ -22,11 +23,12 @@ const clickedPolylineOptions = {color: "url(#polylineHighlightGradient)", weight
 const dottedPolylineOptions = {color: "url(#polylineGradient)", weight: 8, dashArray: '5, 10'};
 
 const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
-    const [snap, setSnap] = useState<number | string | null>("148px");
+    const [snap, setSnap] = useState<number | string | null>("250px");
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
     const [selected, setSelected] = useState(false);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [popupPosition, setPopupPosition] = useState<LatLngLiteral | null>(null);
+    const walkingTime = estimateWalkingTime(estimatedDistance);
     const map = useMap();
 
     // Ensure polyline is not undefined or empty before proceeding
@@ -147,7 +149,6 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
         return null;
     };
 
-
     const getDottedPolylineEnd = () => {
         const toGeom = parsePoint(locationQuery.to?.geom);
         if (lastCoordinate && toGeom) {
@@ -158,26 +159,42 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
 
     return (
         <>
-            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} snapPoints={["300px", "355px", 1]}
-      activeSnapPoint={snap}
-      setActiveSnapPoint={setSnap}
+            <Drawer
+                open={drawerOpen}
+                onOpenChange={setDrawerOpen}
+                snapPoints={["250px", "455px", "700px"]}
+                activeSnapPoint={snap}
+                setActiveSnapPoint={setSnap}
             >
                 <DrawerContent
-                    className="pb-20 z-[10000000] top-[50px] max-h-[50%]"> {/* Adjust the `top` and `max-height` */}
-                    <DrawerHeader>
-                        <DrawerTitle>Route Information</DrawerTitle>
-                        <DrawerDescription>
-                            {estimatedDistance && `Estimated distance: ${estimatedDistance} meters`}
-                        </DrawerDescription>
-                    </DrawerHeader>
+                    className=" z-[10000000000000] top-[50px] max-h-[100%] "
+                >
+                    <div className=' overflow-y-auto  drawer-content  z-[10000000]  '>
+                        <DrawerHeader>
+                            <DrawerTitle>Route Information</DrawerTitle>
+                            <DrawerDescription>
+                                Should take
+                                about {walkingTime === 0 ? "less than a minute" : `${walkingTime} ${walkingTime === 1 ? "min " : "mins "}`}
+                                to cover {estimatedDistance && ` ${(estimatedDistance * 0.001).toFixed(2)} km`}
+                            </DrawerDescription>
+                        </DrawerHeader>
 
-                    {/* Render destination images using ImageLayoutGrid if available */}
-                    {locationQuery?.to?.name && locationQuery?.to?.image_urls && locationQuery.to.image_urls.length > 0 && (
-                        <div className="mt-4">
-                            <p className='font-medium sm:text-sm md:text-lg text-center'>Destination: {locationQuery.to.name}</p>
-                            <ImageLayoutGrid images={locationQuery.to.image_urls}/>
-                        </div>
-                    )}
+                        {/* Render destination images using ImageLayoutGrid if available */}
+                        {locationQuery?.to?.name && locationQuery?.to?.image_urls && locationQuery.to.image_urls.length > 0 ? (
+                            <div className="mt-4">
+                                <p className="font-medium sm:text-sm md:text-lg text-center"> {locationQuery.to.name}</p>
+                                <ImageLayoutGrid images={locationQuery.to.image_urls}/>
+                            </div>
+                        ) : (
+                            <div
+                                className="mt-4 flex flex-col space-y-3 md:space-y-0 rounded-lg p-3 flex-grow h-96 md:flex-row lg:flex-row justify-between md:space-x-2">
+                                {/* Show skeletons if no images or images are loading */}
+                                <Skeleton className='h-full  w-full'/>
+                                <Skeleton className='h-full  w-full'/>
+                                <Skeleton className='h-full  w-full'/>
+                            </div>
+                        )}
+                    </div>
                 </DrawerContent>
             </Drawer>
 
@@ -190,8 +207,7 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
                                 <p className='font-bold'>{locationQuery?.to?.name}</p>
                             </p>
                             <p className='font-medium text-sm md:text-lg'>
-                                Should take
-                                about {estimateWalkingTime(estimatedDistance) === 0 ? "less than a minute" : `${estimateWalkingTime(estimatedDistance)} ${estimateWalkingTime(estimatedDistance) === 1 ? "minute" : "minutes"}`}
+                                {walkingTime === 0 ? "less than a minute" : `${walkingTime} ${walkingTime === 1 ? "min" : "mins"}`}
                             </p>
                         </div>
                     </Popup>
@@ -232,7 +248,7 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
                         className='flex md:flex-row justify-between items-center rounded-xl text-nowrap text-sm md:text-base '>
                         <BsPersonWalking color='green' className='mr-1 sm:mr-3 ' size={25}/>
                         <p className='font-medium text-sm md:text-lg'>
-                            {estimateWalkingTime(estimatedDistance) === 0 ? "less than a minute" : `${estimateWalkingTime(estimatedDistance)} ${estimateWalkingTime(estimatedDistance) === 1 ? "minute" : "minutes"}`}
+                            {walkingTime === 0 ? "less than a minute" : `${walkingTime} ${walkingTime === 1 ? "min" : "mins"}`}
                         </p>
                     </div>
                 </Popup>

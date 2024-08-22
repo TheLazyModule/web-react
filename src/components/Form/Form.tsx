@@ -94,9 +94,10 @@ function Form() {
                 <div className="flex flex-row space-y-2 md:space-y-0 mb-4">
                     <div className='items-center'>
                         <IoAccessibility size={25} color='green'/>
-                        <IoEllipsisVertical size={18} className='ml-1 mt-3'/>
+                        <IoEllipsisVertical size={18} className='ml-1 mt-2'/>
                         <IoEllipsisVertical size={18} className='ml-1'/>
-                        <IoEllipsisVertical size={18} className='ml-1 mb-3'/>
+                        <IoEllipsisVertical size={18} className='ml-1'/>
+                        <IoEllipsisVertical size={18} className='ml-1 mb-2'/>
                         <IoLocationOutline size={25} color='red'/>
                     </div>
                     <div>

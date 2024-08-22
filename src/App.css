@@ -1,0 +1,9 @@
+.drawer-content::-webkit-scrollbar {
+    display: none;
+}
+
+.drawer-content {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+}
+

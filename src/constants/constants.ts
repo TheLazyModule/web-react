@@ -39,6 +39,7 @@ export interface OptionValue {
     name: string;
     category_id: number;
     geom: string;
+    description?: string;
     image_urls?: string[];
 }
 export const categoriesData = [
