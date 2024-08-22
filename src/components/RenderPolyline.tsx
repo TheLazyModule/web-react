@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
-import { BsPersonWalking } from "react-icons/bs";
-import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet';
+import {useEffect, useState} from 'react';
+import {Marker, Polyline, Popup, useMap} from 'react-leaflet';
+import {BsPersonWalking} from "react-icons/bs";
+import L, {LatLngExpression, LatLngLiteral, LatLngTuple} from 'leaflet';
 import 'leaflet.smooth_marker_bouncing';
-import { markerIconRed } from "@/constants/constants.ts";
+import {markerIconRed} from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import parsePoint, { estimateWalkingTime } from "@/utils/utils.ts";
-import { IoAccessibility } from "react-icons/io5";
+import parsePoint, {estimateWalkingTime} from "@/utils/utils.ts";
+import {IoAccessibility} from "react-icons/io5";
 
 interface RenderPolylineProps {
     polyline: LatLngExpression[];
@@ -15,15 +15,15 @@ interface RenderPolylineProps {
     estimatedDistance: number | null;
 }
 
-const polylineOptions = { color: "url(#polylineGradient)", weight: 14 }; // Default to gradient
-const clickedPolylineOptions = { color: "url(#polylineHighlightGradient)", weight: 100 }; // Highlighted gradient when clicked
-const dottedPolylineOptions = { color: "url(#polylineGradient)", weight: 8, dashArray: '5, 10' };
+const polylineOptions = {color: "url(#polylineGradient)", weight: 14}; // Default to gradient
+const clickedPolylineOptions = {color: "url(#polylineHighlightGradient)", weight: 100}; // Highlighted gradient when clicked
+const dottedPolylineOptions = {color: "url(#polylineGradient)", weight: 8, dashArray: '5, 10'};
 
 // Handle all three cases
 // 1. user selected location
 // 2. user clicked location
 // 3. user geolocated location
-const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDistance }: RenderPolylineProps) => {
+const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
     const liveLocation = useLocationQueryStore((s) => s.liveLocationLatLng);
     const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
@@ -39,7 +39,7 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
     useEffect(() => {
         if (polyline.length > 0) {
             const bounds = L.latLngBounds(polyline); // Create bounds from the polyline
-            map.fitBounds(bounds, { padding: [50, 50] }); // Fit the map to the bounds with padding
+            map.fitBounds(bounds, {padding: [50, 50]}); // Fit the map to the bounds with padding
         }
     }, [firstCoordinate, map, polyline]);
 
@@ -161,11 +161,12 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
                     <Popup>
                         <div className='border-[0.1rem] border-primary rounded-xl p-3 text-sm md:text-base'>
                             <p className='font-medium text-sm md:text-lg'>
-                                Here is your Destination <IoAccessibility size={25} className='inline' color='green' />
+                                Here is your Destination <IoAccessibility size={25} className='inline' color='green'/>
                                 <p className='font-bold'>{locationQuery?.to?.name}</p>
                             </p>
                             <p className='font-medium text-sm md:text-lg'>
-                                Should take about {estimatedWalkingTime === 0 ? "less than a minute" : `${estimatedWalkingTime} ${estimatedWalkingTime === 0 ? "minute" : "minutes"}`}
+                                Should take
+                                about {estimatedWalkingTime === 0 ? "less than a minute" : `${estimatedWalkingTime} ${estimatedWalkingTime === 1 ? "minute" : "minutes"}`}
                             </p>
                         </div>
                     </Popup>
@@ -199,10 +200,11 @@ const RenderPolyline = ({ polyline, firstCoordinate, lastCoordinate, estimatedDi
 
             {popupPosition && selected && (
                 <Popup position={popupPosition}>
-                    <div className='flex flex-col md:flex-row justify-between items-center border-[0.1rem] border-primary rounded-xl p-3 text-sm md:text-base'>
-                        <BsPersonWalking color='green' className='mr-3' size={30} />
+                    <div
+                        className='flex md:flex-row justify-between items-center rounded-xl text-nowrap text-sm md:text-base '>
+                        <BsPersonWalking color='green' className='mr-1 sm:mr-3 ' size={25}/>
                         <p className='font-medium text-sm md:text-lg'>
-                            Should take about {estimatedWalkingTime === 0 ? "less than a minute" : `${estimatedWalkingTime} ${estimatedWalkingTime === 0 ? "minute" : "minutes"}`}
+                             {estimatedWalkingTime === 0 ? "less than a minute" : `${estimatedWalkingTime} ${estimatedWalkingTime === 1 ? "minute" : "minutes"}`}
                         </p>
                     </div>
                 </Popup>

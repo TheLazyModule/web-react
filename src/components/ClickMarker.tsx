@@ -82,7 +82,7 @@ const ClickMarker = () => {
         >
             <Popup>
                 <div className='border-[0.1rem] border-primary rounded-xl px-3'>
-                    <p className='font-medium text-lg'>
+                    <p className='font-medium sm:text-sm md:text-lg'>
                         I'm here!
                     </p>
                 </div>

@@ -112,7 +112,7 @@ const MapView = () => {
                                 >
                                     <Popup closeOnEscapeKey>
                                         <div className='border-[0.1rem] border-primary rounded-xl px-3'>
-                                            <p className='font-medium text-lg '>{building.name}</p>
+                                            <p className='font-medium sm:text-sm md:text-lg '>{building.name}</p>
                                             {building.image_urls && building.image_urls[0] && (
                                                 <img src={building.image_urls[0]} alt={building.name}/>
                                             )}
@@ -139,10 +139,10 @@ const MapView = () => {
                                     }
                                 }}
                             >
-                                <Popup minWidth={200} maxWidth={500} closeOnEscapeKey>
+                                <Popup minWidth={200} maxWidth={500} closeOnEscapeKey className=''>
                                     <div
                                         className="flex flex-col h-full w-full justify-center items-center border-[0.1rem] border-primary rounded-xl px-3">
-                                        <p className="text-lg font-medium">{place.name}</p>
+                                        <p className="font-medium sm:text-sm md:text-lg">{place.name}</p>
                                     </div>
                                 </Popup>
                             </Marker>
