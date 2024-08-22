@@ -81,7 +81,7 @@ function Form() {
 
     return (
         <div
-            className="max-w-md w-full mx-auto font-bai rounded-none md:rounded-2xl  md:p-10 shadow-input bg-white dark:bg-black">
+            className="max-w-md w-full mx-auto font-bai rounded-none md:rounded-2xl  md:p-5 shadow-input bg-white dark:bg-black">
             <h2 className="font-bold text-neutral-800 text-2xl dark:text-neutral-200">
                 Welcome <br/>to Find My classroom
             </h2>

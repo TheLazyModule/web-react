@@ -10,7 +10,7 @@ import ClickMarker from "@/components/ClickMarker.tsx";
 import Searchbar from "@/components/Searchbar.tsx";
 import {buildingIcon, placeIcon} from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import parsePoint from "@/utils/utils.ts";
+import parsePoint, {getDeviceType} from "@/utils/utils.ts";
 import useOffline from "@/hooks/useOffline.ts";
 import useAllLocations from "@/hooks/useAllLocations.ts";
 
@@ -71,7 +71,7 @@ const MapView = () => {
                 }}
                 whenReady={() => setLoading(false)}
             >
-                <LayersControl>
+                <LayersControl position='bottomright'>
                     <BaseLayer checked name="knust_tms">
                         <TileLayer
                             tms
@@ -130,9 +130,11 @@ const MapView = () => {
                                 icon={placeIcon}
                                 eventHandlers={{
                                     mouseover: (e) => {
+                                        if (getDeviceType() === 'Mobile') return;
                                         e.target.openPopup();
                                     },
                                     mouseout: (e) => {
+                                        if (getDeviceType() === 'Mobile') return;
                                         e.target.closePopup();
                                     }
                                 }}

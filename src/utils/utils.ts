@@ -26,7 +26,7 @@ export function estimateWalkingTime(distanceMeters: number | null): number {
 }
 
 
-function getDeviceType() {
+export function getDeviceType() {
     const userAgent = navigator.userAgent;
 
     if (/mobile/i.test(userAgent)) {

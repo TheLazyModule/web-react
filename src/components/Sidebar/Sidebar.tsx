@@ -23,18 +23,18 @@ const Sidebar = ({position = 'left', theme = 'light', polyline}: SidebarProps) =
     const toggleSidebar = () => setIsOpen(!isOpen);
 
     // Construct class names based on state and props
-    const sidebarClasses = ` sidepanel z-[100000000000]  sidepanel-${position} ${isOpen ? 'opened' : 'closed'} ${theme === 'dark' ? 'sidepanel-dark' : ''}`;
+    const sidebarClasses = ` sidepanel z-[100000000000]   sidepanel-${position} ${isOpen ? 'opened' : 'closed'} ${theme === 'dark' ? 'sidepanel-dark' : ''}`;
 
     return (
         <div className={sidebarClasses}>
-            <div className="sidepanel-inner-wrapper ">
+            <div className="sidepanel-inner-wrapper pt-2 p-5 md:pl-1 md:pt-10">
                 <div className="sidepanel-content-wrapper  ">
-                    <div className="sidepanel-content sm:mt-2 mt-12 ">
+                    <div className="sidepanel-content ">
                         {/* Your sidebar content here */}
 
-                        <div className='flex flex-col items-center sm:my-0'>
+                        <div className='flex flex-col items-center sm:my-0 '>
                             <SiGoogleclassroom size={90} color='#4F6F52'
-                                               className="hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out"/>
+                                               className="hover:opacity-50 hover:scale-110 transition duration-300 ease-in-out xs:mb-3"/>
 
                         </div>
                         <Form/>

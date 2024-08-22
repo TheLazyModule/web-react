@@ -58,7 +58,7 @@ const Searchbar = () => {
 
     return (
         <div
-            className="absolute z-[1000] left-[5.4rem] md:left-[30rem] top-[15px] border rounded-xl p-1 w-[14rem] md:w-[30rem] bg-white shadow-sm"
+            className="absolute z-[1000] left-[5.4rem] md:left-[30rem] top-[15px] border rounded-xl p-1 w-[14rem] sm:w-[20rem] md:w-[25rem] lg:w-[30rem] bg-white shadow-sm"
         >
             <div className="max-w-lg" ref={dropdownRef}>
                 <div className="relative">
