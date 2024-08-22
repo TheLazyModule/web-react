@@ -48,6 +48,5 @@ export function getDeviceType() {
     }
 }
 
-console.log(getDeviceType()); // Outputs the detected device type
 
 export default parsePoint;

@@ -11,7 +11,6 @@ const apiClient = new APIClient<Route>("/all/route");
 
 const useRoute = () => {
     const locationQuery = useLocationQueryStore(s => s.locationQuery);
-    console.log("from to be submitted: ", locationQuery);
 
 
     const enabled = !!locationQuery.from?.name && !!locationQuery.to?.name && (locationQuery.from.name !== locationQuery.to.name);

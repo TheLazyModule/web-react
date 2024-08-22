@@ -46,7 +46,7 @@ export const ImagesSlider = ({
 
         let interval: ReturnType<typeof setInterval> | null = null;
         if (autoplay && loadedImages.length > 0) {
-            interval = setInterval(handleAutoplay, 5000);
+            interval = setInterval(handleAutoplay, 2000);
         }
 
         return () => {

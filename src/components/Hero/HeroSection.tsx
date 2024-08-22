@@ -6,7 +6,7 @@ import {NavLink} from "react-router-dom";
 
 export function HeroSection() {
     return (
-        <ImagesSlider className="h-[40rem]" images={heroData}>
+        <ImagesSlider className="h-[40rem]" images={heroData} autoplay >
             <motion.div
                 initial={{
                     opacity: 0,

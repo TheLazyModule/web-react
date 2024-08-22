@@ -19,7 +19,6 @@ const Navbar = () => {
         {id: 1, text: 'Home'},
         {id: 2, text: 'Map'},
         {id: 3, text: 'Contact'},
-        // {id: 2, text: 'About'},
     ];
 
     return (

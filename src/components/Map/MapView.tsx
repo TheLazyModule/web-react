@@ -103,18 +103,25 @@ const MapView = () => {
                                     riseOnHover
                                     eventHandlers={{
                                         mouseover: (e) => {
+                                            if (getDeviceType() === 'Mobile') return;
                                             e.target.openPopup();
                                         },
                                         mouseout: (e) => {
+                                            if (getDeviceType() === 'Mobile') return;
                                             e.target.closePopup();
                                         }
                                     }}
                                 >
                                     <Popup closeOnEscapeKey>
-                                        <div className='border-[0.1rem] border-primary rounded-xl px-3'>
-                                            <p className='font-medium sm:text-sm md:text-lg '>{building.name}</p>
+                                        <div
+                                            className={`border-[0.1rem] border-primary rounded-xl px-3 ${building.image_urls ? "w-64 h-64" : ""}  flex flex-col items-center justify-center`}> {/* Set fixed width and height */}
+                                            <p className='font-medium sm:text-sm md:text-lg text-center'>{building.name}</p>
                                             {building.image_urls && building.image_urls[0] && (
-                                                <img src={building.image_urls[0]} alt={building.name}/>
+                                                <img
+                                                    src={building.image_urls[0]}
+                                                    className='w-full h-48 object-cover mt-2' // Adjust image height to fit within the popup, maintaining aspect ratio
+                                                    alt={building.name}
+                                                />
                                             )}
                                         </div>
                                     </Popup>

@@ -3,6 +3,7 @@ import marker from "@/assets/location.svg";
 import markerGreen from "@/assets/location_green.png";
 import buildingIconImg from '@/assets/b1.svg'; // Replace with actual path
 import placeIconImg from '@/assets/p1.svg'; // Replace with actual path
+import markerToon from "@/assets/pin-svgrepo-com.svg"
 import b1 from "@/assets/b2.svg";
 import p1 from "@/assets/p1.svg";
 import c1 from "@/assets/c1.svg";
@@ -22,6 +23,14 @@ export const markerIconGreen = new L.Icon({
     iconRetinaUrl: markerGreen,
     popupAnchor: [-0, -0],
     iconSize: [32, 32],
+
+});
+
+export const markerIconRedToon = new L.Icon({
+    iconUrl: markerToon,
+    iconRetinaUrl: markerToon,
+    popupAnchor: [-0, -0],
+    iconSize: [44, 44],
 
 });
 

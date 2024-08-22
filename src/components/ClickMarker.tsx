@@ -2,7 +2,7 @@ import useLocationQueryStore from "@/hooks/useLocationStore.ts";
 import useLocationStore from "@/hooks/useLocationStore.ts";
 import {LatLngTuple} from "leaflet";
 import {Marker, Popup, useMapEvents} from "react-leaflet";
-import {markerIconGreen} from "@/constants/constants.ts";
+import {markerIconRedToon } from "@/constants/constants.ts";
 import {getDeviceType} from "@/utils/utils.ts";
 
 const ClickMarker = () => {
@@ -65,19 +65,11 @@ const ClickMarker = () => {
 
     return (
         <Marker
-            icon={markerIconGreen}
+            icon={markerIconRedToon}
             draggable
             position={markerPosition}
             eventHandlers={{
                 dragend: handleMarkerDragEnd,
-                mouseover: (e) => {
-                    if (getDeviceType() === 'Mobile') return;
-                    e.target.openPopup();
-                },
-                mouseout: (e) => {
-                    if (getDeviceType() === 'Mobile') return;
-                    e.target.closePopup();
-                }
             }}
         >
             <Popup>

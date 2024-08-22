@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import {LayoutGrid} from "@/components/ui/layout-grid";
 
 export function ImageLayoutGrid({images}) {
