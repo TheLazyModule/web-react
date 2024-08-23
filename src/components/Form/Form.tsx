@@ -81,7 +81,7 @@ function Form() {
 
     return (
         <div
-            className="max-w-md w-full mx-auto font-bai rounded-none md:rounded-2xl  md:p-5 shadow-input bg-white dark:bg-black">
+            className="max-w-sm w-full mx-auto font-bai rounded-none md:rounded-2xl  md:p-5 shadow-input bg-white dark:bg-black">
             <h2 className="font-bold text-neutral-800 text-2xl dark:text-neutral-200">
                 Welcome <br/>to Find My classroom
             </h2>
@@ -89,7 +89,7 @@ function Form() {
                 Where do you want to go?
             </p>
 
-            <form className="my-8  flex flex-col justify-center items-center" onSubmit={handleSubmit(onSubmit)}>
+            <form className="my-8 flex flex-col justify-center items-center" onSubmit={handleSubmit(onSubmit)}>
                 <ButtonGroup/>
                 <div className="flex flex-row space-y-2 md:space-y-0 mb-4">
                     <div className='items-center'>

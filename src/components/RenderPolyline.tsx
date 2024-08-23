@@ -182,16 +182,20 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
                         {/* Render destination images using ImageLayoutGrid if available */}
                         {locationQuery?.to?.name && locationQuery?.to?.image_urls && locationQuery.to.image_urls.length > 0 ? (
                             <div className="mt-4">
-                                <p className="font-medium sm:text-sm md:text-lg text-center"> {locationQuery.to.name}</p>
+                                <p className="font-medium sm:text-sm md:text-lg text-center">{locationQuery.to.name}</p>
                                 <ImageLayoutGrid images={locationQuery.to.image_urls}/>
                             </div>
                         ) : (
-                            <div
-                                className="mt-4 flex flex-col space-y-3 md:space-y-0 rounded-lg p-3 flex-grow h-96 md:flex-row lg:flex-row justify-between md:space-x-2">
-                                {/* Show skeletons if no images or images are loading */}
-                                <Skeleton className='h-full  w-full'/>
-                                <Skeleton className='h-full  w-full'/>
-                                <Skeleton className='h-full  w-full'/>
+
+                            <div>
+                                { locationQuery.to && <p className="font-medium sm:text-sm md:text-lg text-center">{locationQuery.to.name}</p>}
+                                <div
+                                    className="mt-4 flex flex-col space-y-3 md:space-y-0 rounded-lg p-3 flex-grow h-96 md:flex-row lg:flex-row justify-between md:space-x-2">
+                                    {/* Show skeletons if no images or images are loading */}
+                                    <Skeleton className='h-full  w-full'/>
+                                    <Skeleton className='h-full  w-full'/>
+                                    <Skeleton className='h-full  w-full'/>
+                                </div>
                             </div>
                         )}
                     </div>

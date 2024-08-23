@@ -15,7 +15,8 @@ dist-ssr
 public/tiles
 
 .env
-.env.development
+.env.production
+.env.local
 
 # Editor directories and files
 .vscode/*
