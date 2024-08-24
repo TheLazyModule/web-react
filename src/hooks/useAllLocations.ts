@@ -1,20 +1,20 @@
 import {useQuery} from "@tanstack/react-query";
 import APIClient from "@/services/apiClient.ts";
-import ms from 'ms';
+// import {allLocationsData} from "@/constants/allLocationsData.ts";
 
 
 export interface AllLocations {
-    places: {
-        name: string;
-        longitude: number;
-        latitude: number;
-        category_id: number;
-    }[],
     buildings: {
         name: string;
         longitude: number;
         latitude: number;
-        image_urls: string[];
+        image_urls: null | string[];
+        category_id: number;
+    }[];
+    places: {
+        name: string;
+        longitude: number;
+        latitude: number;
         category_id: number;
     }[]
 }
@@ -26,8 +26,9 @@ const UseAllLocations = () => {
     return useQuery<AllLocations>({
         queryKey: ['all'],
         queryFn: apiClient.getAll,
-        staleTime: ms('60d'),
-        retry: 3
+       staleTime: 60 * 60,
+        retry: 3,
+        // initialData: allLocationsData
     })
 };
 

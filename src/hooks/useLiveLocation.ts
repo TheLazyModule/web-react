@@ -9,6 +9,7 @@ const useLiveLocation = () => {
     const setLiveLocationLatLng = useLocationQueryStore((s) => s.setLiveLocationLatLng);
     const setLiveLocationWkt = useLocationQueryStore((s) => s.setLiveLocationWkt);
     const setFromLocation = useLocationQueryStore((s) => s.setFromLocation);
+    const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
     const setFrom = useLocationQueryStore((s) => s.setFrom);
     const [geolocatedCoords, setGeolocatedCoords] = useState<LatLngExpression | null>(null);
 
@@ -56,7 +57,10 @@ const useLiveLocation = () => {
             const newLiveLocation = `POINT(${geolocatedCoords[1]} ${geolocatedCoords[0]})`;
             setLiveLocationLatLng(latlng);
             setLiveLocationWkt(newLiveLocation);
-            setFromLocation(newLiveLocation);
+            if (!userMarkerLocation) {
+                setFromLocation(newLiveLocation);
+            }
+
         }
     }, [isGeolocationAvailable, isGeolocationEnabled, setLiveLocationLatLng, setLiveLocationWkt]);
 

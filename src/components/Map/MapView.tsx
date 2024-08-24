@@ -85,75 +85,88 @@ const MapView = () => {
                         <FlyToLocation location={parsedLocation}/>
                     )}
 
-                    <MarkerClusterGroup chunkedLoading maxClusterRadius={70} spiderfyOnMaxZoom
-                                        polygonOptions={{
-                                            fillColor: 'rgba(255,255,255,0.38)',
-                                            color: 'rgba(240,128,0,0.67)',
-                                            weight: 2,
-                                            opacity: 1,
-                                            fillOpacity: 0.8,
-                                        }}
+                    <MarkerClusterGroup
+                        chunkedLoading
+                        maxClusterRadius={70}
+                        spiderfyOnMaxZoom
+                        polygonOptions={{
+                            fillColor: 'rgba(255,255,255,0.38)',
+                            color: 'rgba(240,128,0,0.67)',
+                            weight: 2,
+                            opacity: 1,
+                            fillOpacity: 0.8,
+                        }}
                     >
-                        {allLocations?.buildings.map((building, index) =>
-                            building.latitude && building.longitude ? (
-                                <Marker
-                                    key={index}
-                                    position={[building.latitude, building.longitude]}
-                                    icon={buildingIcon}
-                                    riseOnHover
-                                    eventHandlers={{
-                                        mouseover: (e) => {
-                                            if (getDeviceType() === 'Mobile') return;
-                                            e.target.openPopup();
-                                        },
-                                        mouseout: (e) => {
-                                            if (getDeviceType() === 'Mobile') return;
-                                            e.target.closePopup();
-                                        }
-                                    }}
-                                >
-                                    <Popup closeOnEscapeKey>
-                                        <div
-                                            className={`border-[0.1rem] border-primary rounded-xl px-3 ${building.image_urls ? "w-64 h-64" : ""}  flex flex-col items-center justify-center`}> {/* Set fixed width and height */}
-                                            <p className='font-medium sm:text-sm md:text-lg text-center'>{building.name}</p>
-                                            {building.image_urls && building.image_urls[0] && (
-                                                <img
-                                                    src={building.image_urls[0]}
-                                                    className='w-full rounded-lg h-48 object-cover my-4 '
-                                                    alt={building.name}
-                                                />
-                                            )}
-                                        </div>
-                                    </Popup>
-                                </Marker>
-                            ) : null
-                        )}
+                        {allLocations?.buildings && allLocations.buildings.length > 0 && allLocations.buildings.map((building, index) => {
+                            if (building.latitude && building.longitude) {
+                                return (
+                                    <Marker
+                                        key={index}
+                                        position={[building.latitude, building.longitude]}
+                                        icon={buildingIcon}
+                                        riseOnHover
+                                        eventHandlers={{
+                                            mouseover: (e) => {
+                                                if (getDeviceType() === 'Mobile') return;
+                                                e.target.openPopup();
+                                            },
+                                            mouseout: (e) => {
+                                                if (getDeviceType() === 'Mobile') return;
+                                                e.target.closePopup();
+                                            }
+                                        }}
+                                    >
+                                        <Popup closeOnEscapeKey>
+                                            <div
+                                                className={`border-[0.1rem] border-primary rounded-xl px-3 ${building.image_urls ? "w-64 h-64" : ""}  flex flex-col items-center justify-center`}
+                                            >
+                                                <p className='font-medium sm:text-sm md:text-lg text-center'>{building.name}</p>
+                                                {building.image_urls && building.image_urls[0] && (
+                                                    <img
+                                                        src={building.image_urls[0]}
+                                                        className='w-full rounded-lg h-48 object-cover my-4'
+                                                        alt={building.name}
+                                                    />
+                                                )}
+                                            </div>
+                                        </Popup>
+                                    </Marker>
+                                );
+                            }
+                            return null; // Safeguard to avoid rendering invalid data
+                        })}
 
-                        {allLocations?.places.map((place, index) => (
-                            <Marker
-                                riseOnHover
-                                key={index}
-                                position={[place.latitude, place.longitude]}
-                                icon={placeIcon}
-                                eventHandlers={{
-                                    mouseover: (e) => {
-                                        if (getDeviceType() === 'Mobile') return;
-                                        e.target.openPopup();
-                                    },
-                                    mouseout: (e) => {
-                                        if (getDeviceType() === 'Mobile') return;
-                                        e.target.closePopup();
-                                    }
-                                }}
-                            >
-                                <Popup minWidth={200} maxWidth={500} closeOnEscapeKey className=''>
-                                    <div
-                                        className="flex flex-col h-full w-full justify-center items-center border-[0.1rem] border-primary rounded-xl px-3">
-                                        <p className="font-medium sm:text-sm md:text-lg">{place.name}</p>
-                                    </div>
-                                </Popup>
-                            </Marker>
-                        ))}
+                        {allLocations?.places && allLocations.places.length > 0 && allLocations.places.map((place, index) => {
+                            if (place.latitude && place.longitude) {
+                                return (
+                                    <Marker
+                                        riseOnHover
+                                        key={index}
+                                        position={[place.latitude, place.longitude]}
+                                        icon={placeIcon}
+                                        eventHandlers={{
+                                            mouseover: (e) => {
+                                                if (getDeviceType() === 'Mobile') return;
+                                                e.target.openPopup();
+                                            },
+                                            mouseout: (e) => {
+                                                if (getDeviceType() === 'Mobile') return;
+                                                e.target.closePopup();
+                                            }
+                                        }}
+                                    >
+                                        <Popup minWidth={200} maxWidth={500} closeOnEscapeKey>
+                                            <div
+                                                className="flex flex-col h-full w-full justify-center items-center border-[0.1rem] border-primary rounded-xl px-3"
+                                            >
+                                                <p className="font-medium sm:text-sm md:text-lg">{place.name}</p>
+                                            </div>
+                                        </Popup>
+                                    </Marker>
+                                );
+                            }
+                            return null; // Safeguard to avoid rendering invalid data
+                        })}
                     </MarkerClusterGroup>
 
                     {polylineCoordinates.length > 0 && (

@@ -25,6 +25,7 @@ const dottedPolylineOptions = {color: "url(#polylineGradient)", weight: 8, dashA
 const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDistance}: RenderPolylineProps) => {
     const [snap, setSnap] = useState<number | string | null>("250px");
     const locationQuery = useLocationQueryStore((s) => s.locationQuery);
+    const fromLocation = parsePoint( useLocationQueryStore((s) => s.locationQuery.from_location) );
     const [selected, setSelected] = useState(false);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [popupPosition, setPopupPosition] = useState<LatLngLiteral | null>(null);
@@ -137,14 +138,12 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
 
     const getDottedPolylineStart = () => {
         const fromGeom = parsePoint(locationQuery.from?.geom);
-        const liveLocation = useLocationQueryStore((s) => s.liveLocationLatLng);
-        const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
+        // const liveLocation = useLocationQueryStore((s) => s.liveLocationLatLng);
+        // const userMarkerLocation = useLocationQueryStore((s) => s.userMarkerLocation);
         if (firstCoordinate && fromGeom) {
             return [firstCoordinate, fromGeom];
-        } else if (firstCoordinate && userMarkerLocation) {
-            return [firstCoordinate, userMarkerLocation];
-        } else if (firstCoordinate && liveLocation) {
-            return [firstCoordinate, liveLocation];
+        } else if (firstCoordinate && fromLocation) {
+            return [firstCoordinate, fromLocation];
         }
         return null;
     };
@@ -169,16 +168,16 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
                 <DrawerContent
                     className=" z-[10000000000000] top-[50px] max-h-[100%] "
                 >
-                    <div className=' overflow-y-auto  drawer-content  z-[10000000]  '>
-                        <DrawerHeader>
-                            <DrawerTitle>Route Information</DrawerTitle>
-                            <DrawerDescription>
-                                Should take
-                                about {walkingTime === 0 ? "less than a minute" : `${walkingTime} ${walkingTime === 1 ? "min " : "mins "}`}
-                                to cover {estimatedDistance && ` ${(estimatedDistance * 0.001).toFixed(2)} km`}
-                            </DrawerDescription>
-                        </DrawerHeader>
+                    <DrawerHeader>
+                        <DrawerTitle>Route Information</DrawerTitle>
+                        <DrawerDescription>
+                            Should take
+                            about {walkingTime === 0 ? "less than a minute" : `${walkingTime} ${walkingTime === 1 ? "min " : "mins "}`}
+                            to cover {estimatedDistance && ` ${(estimatedDistance * 0.001).toFixed(2)} km`}
+                        </DrawerDescription>
+                    </DrawerHeader>
 
+                    <div className=' overflow-y-auto  drawer-content  z-[10000000]  '>
                         {/* Render destination images using ImageLayoutGrid if available */}
                         {locationQuery?.to?.name && locationQuery?.to?.image_urls && locationQuery.to.image_urls.length > 0 ? (
                             <div className="mt-4">
@@ -188,7 +187,8 @@ const RenderPolyline = ({polyline, firstCoordinate, lastCoordinate, estimatedDis
                         ) : (
 
                             <div>
-                                { locationQuery.to && <p className="font-medium sm:text-sm md:text-lg text-center">{locationQuery.to.name}</p>}
+                                {locationQuery.to &&
+                                    <p className="font-medium sm:text-sm md:text-lg text-center">{locationQuery.to.name}</p>}
                                 <div
                                     className="mt-4 flex flex-col space-y-3 md:space-y-0 rounded-lg p-3 flex-grow h-96 md:flex-row lg:flex-row justify-between md:space-x-2">
                                     {/* Show skeletons if no images or images are loading */}
