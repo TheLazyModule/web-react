@@ -1,188 +1,227 @@
-import {useEffect, useState} from "react";
-import {LayersControl, MapContainer, Marker, Popup, TileLayer, useMap} from "react-leaflet";
+import { useEffect, useState } from "react";
+import { LayersControl, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import MarkerClusterGroup from 'react-leaflet-cluster'; // Import the MarkerClusterGroup
 import Sidebar from "../Sidebar/Sidebar.tsx";
-import {BounceLoader} from "react-spinners";
+import { BounceLoader } from "react-spinners";
 import usePolyline from "@/hooks/usePolyline.tsx";
 import RenderPolyline from "@/components/RenderPolyline.tsx";
 import "leaflet/dist/leaflet.css";
 import ClickMarker from "@/components/ClickMarker.tsx";
 import Searchbar from "@/components/Searchbar.tsx";
-import {buildingIcon, placeIcon} from "@/constants/constants.ts";
+import { buildingIcon, placeIcon } from "@/constants/constants.ts";
 import useLocationQueryStore from "@/hooks/useLocationStore.ts";
-import parsePoint, {getDeviceType} from "@/utils/utils.ts";
+import parsePoint, { getDeviceType } from "@/utils/utils.ts";
 import useOffline from "@/hooks/useOffline.ts";
 import useAllLocations from "@/hooks/useAllLocations.ts";
+import dbb from "@/assets/dennis-pallete.png";
+import toast from "react-hot-toast";
 
-const FlyToLocation = ({location}) => {
-    const map = useMap();
+const FlyToLocation = ({ location }) => {
+  const map = useMap();
 
-    useEffect(() => {
-        if (location) {
-            map.flyTo(location, 20);
-        }
-    }, [location, map]);
+  useEffect(() => {
+    if (location) {
+      map.flyTo(location, 20);
+    }
+  }, [location, map]);
 
-    return null;
+  return null;
 };
 
 const MapView = () => {
-    const {data: allLocations} = useAllLocations();
-    const location = useLocationQueryStore((s) => s.singleLocation);
-    const locationQuery = useLocationQueryStore((s) => s.locationQuery);
-    const {polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate} = usePolyline();
-    const [loading, setLoading] = useState(true);
-    useOffline();
+  const { data: allLocations } = useAllLocations();
+  const location = useLocationQueryStore((s) => s.singleLocation);
+  const locationQuery = useLocationQueryStore((s) => s.locationQuery);
+  const { polylineCoordinates, isLoading, roundedDistance, firstCoordinate, lastCoordinate } = usePolyline();
+  const [loading, setLoading] = useState(true);
+  useOffline();
 
-    useEffect(() => {
-        setLoading(isLoading);
-    }, [isLoading]);
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading]);
 
-    const {BaseLayer} = LayersControl;
-    const parsedLocation = location ? parsePoint(location.geom) : null;
+  useEffect(() => {
+    toast.custom((t) => (
+      <div
+        className={`${t.visible ? 'animate-enter' : 'animate-leave'
+          } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+      >
+        <div className="flex-1 w-0 p-4">
+          <div className="flex items-start">
+            <div className="flex-shrink-0 pt-0.5">
+              <img
+                className="h-10 w-10 rounded-full"
+                src={dbb}
+                alt=""
+              />
+            </div>
+            <div className="ml-3 flex-1">
+              <p className="text-sm font-medium text-gray-900">
+                Dennis Boachie
+              </p>
+              <p className="mt-1 text-sm text-gray-500">
+                Kindly wait a few seconds for server to spin back up since it's a hobby project 🙈 <br/>
+                You should see the Points of Interests displayed on the map shortly 
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex border-l border-gray-200">
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    ))
+  }, [])
 
-    return (
-        <div className="relative">
-            <Searchbar/>
-            <Sidebar position="left" theme="light" polyline={polylineCoordinates}/>
+  const { BaseLayer } = LayersControl;
+  const parsedLocation = location ? parsePoint(location.geom) : null;
 
-            {loading && (
-                <div className="absolute inset-0 flex items-center justify-center z-[1000] bg-white bg-opacity-75">
-                    <BounceLoader size={50} color={"#4F6F52"} loading={loading}/>
-                </div>
-            )}
+  return (
+    <div className="relative">
+      <Searchbar />
+      <Sidebar position="left" theme="light" polyline={polylineCoordinates} />
 
-            <MapContainer
-                className="w-full h-full bg-black"
-                center={[6.673175, -1.565423]}
-                zoom={16}
-                style={{
-                    height: "100vh",
-                    width: "100%",
-                    backgroundColor: "#e5e5f7",
-                    backgroundImage: `
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center z-[1000] bg-white bg-opacity-75">
+          <BounceLoader size={50} color={"#4F6F52"} loading={loading} />
+        </div>
+      )}
+
+      <MapContainer
+        className="w-full h-full bg-black"
+        center={[6.673175, -1.565423]}
+        zoom={16}
+        style={{
+          height: "100vh",
+          width: "100%",
+          backgroundColor: "#e5e5f7",
+          backgroundImage: `
                         linear-gradient(#80e38d 2px, transparent 2px),
                         linear-gradient(90deg, #80e38d 2px, transparent 2px),
                         linear-gradient(#80e38d 1px, transparent 1px),
                         linear-gradient(90deg, #80e38d 1px, #e5e5f7 1px)
                     `,
-                    backgroundSize: "50px 50px, 50px 50px, 10px 10px, 10px 10px",
-                    backgroundPosition: "-2px -2px, -2px -2px, -1px -1px, -1px -1px",
-                }}
-                whenReady={() => setLoading(false)}
-            >
-                <LayersControl position='bottomright'>
-                    <BaseLayer checked name="knust_tms">
-                        <TileLayer
-                            tms
-                            url="https://knust-tms.intdeltas.com/tms/{z}/{x}/{y}.png"
-                            maxZoom={22}
-                            minZoom={2}
-                        />
-                    </BaseLayer>
+          backgroundSize: "50px 50px, 50px 50px, 10px 10px, 10px 10px",
+          backgroundPosition: "-2px -2px, -2px -2px, -1px -1px, -1px -1px",
+        }}
+        whenReady={() => setLoading(false)}
+      >
+        <LayersControl position='bottomright'>
+          <BaseLayer checked name="OpenStreetMap">
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxZoom={19}
+              minZoom={2}
+            />
+          </BaseLayer>
 
-                    {parsedLocation && !locationQuery.from?.name && !locationQuery.to?.name && (
-                        <FlyToLocation location={parsedLocation}/>
-                    )}
+          {parsedLocation && !locationQuery.from?.name && !locationQuery.to?.name && (
+            <FlyToLocation location={parsedLocation} />
+          )}
 
-                    <MarkerClusterGroup
-                        chunkedLoading
-                        maxClusterRadius={70}
-                        spiderfyOnMaxZoom
-                        polygonOptions={{
-                            fillColor: 'rgba(255,255,255,0.38)',
-                            color: 'rgba(240,128,0,0.67)',
-                            weight: 2,
-                            opacity: 1,
-                            fillOpacity: 0.8,
-                        }}
-                    >
-                        {allLocations?.buildings && allLocations.buildings.length > 0 && allLocations.buildings.map((building, index) => {
-                            if (building.latitude && building.longitude) {
-                                return (
-                                    <Marker
-                                        key={index}
-                                        position={[building.latitude, building.longitude]}
-                                        icon={buildingIcon}
-                                        riseOnHover
-                                        eventHandlers={{
-                                            mouseover: (e) => {
-                                                if (getDeviceType() === 'Mobile') return;
-                                                e.target.openPopup();
-                                            },
-                                            mouseout: (e) => {
-                                                if (getDeviceType() === 'Mobile') return;
-                                                e.target.closePopup();
-                                            }
-                                        }}
-                                    >
-                                        <Popup closeOnEscapeKey>
-                                            <div
-                                                className={`border-[0.1rem] border-primary rounded-xl px-3 ${building.image_urls ? "w-64 h-64" : ""}  flex flex-col items-center justify-center`}
-                                            >
-                                                <p className='font-medium sm:text-sm md:text-lg text-center'>{building.name}</p>
-                                                {building.image_urls && building.image_urls[0] && (
-                                                    <img
-                                                        src={building.image_urls[0]}
-                                                        className='w-full rounded-lg h-48 object-cover my-4'
-                                                        alt={building.name}
-                                                    />
-                                                )}
-                                            </div>
-                                        </Popup>
-                                    </Marker>
-                                );
-                            }
-                            return null; // Safeguard to avoid rendering invalid data
-                        })}
+          <MarkerClusterGroup
+            chunkedLoading
+            maxClusterRadius={70}
+            spiderfyOnMaxZoom
+            polygonOptions={{
+              fillColor: 'rgba(255,255,255,0.38)',
+              color: 'rgba(240,128,0,0.67)',
+              weight: 2,
+              opacity: 1,
+              fillOpacity: 0.8,
+            }}
+          >
+            {allLocations?.buildings && allLocations.buildings.length > 0 && allLocations.buildings.map((building, index) => {
+              if (building.latitude && building.longitude) {
+                return (
+                  <Marker
+                    key={index}
+                    position={[building.latitude, building.longitude]}
+                    icon={buildingIcon}
+                    riseOnHover
+                    eventHandlers={{
+                      mouseover: (e) => {
+                        if (getDeviceType() === 'Mobile') return;
+                        e.target.openPopup();
+                      },
+                      mouseout: (e) => {
+                        if (getDeviceType() === 'Mobile') return;
+                        e.target.closePopup();
+                      }
+                    }}
+                  >
+                    <Popup closeOnEscapeKey>
+                      <div
+                        className={`border-[0.1rem] border-primary rounded-xl px-3 ${building.image_urls ? "w-64 h-64" : ""}  flex flex-col items-center justify-center`}
+                      >
+                        <p className='font-medium sm:text-sm md:text-lg text-center'>{building.name}</p>
+                        {building.image_urls && building.image_urls[0] && (
+                          <img
+                            src={building.image_urls[0]}
+                            className='w-full rounded-lg h-48 object-cover my-4'
+                            alt={building.name}
+                          />
+                        )}
+                      </div>
+                    </Popup>
+                  </Marker>
+                );
+              }
+              return null; // Safeguard to avoid rendering invalid data
+            })}
 
-                        {allLocations?.places && allLocations.places.length > 0 && allLocations.places.map((place, index) => {
-                            if (place.latitude && place.longitude) {
-                                return (
-                                    <Marker
-                                        riseOnHover
-                                        key={index}
-                                        position={[place.latitude, place.longitude]}
-                                        icon={placeIcon}
-                                        eventHandlers={{
-                                            mouseover: (e) => {
-                                                if (getDeviceType() === 'Mobile') return;
-                                                e.target.openPopup();
-                                            },
-                                            mouseout: (e) => {
-                                                if (getDeviceType() === 'Mobile') return;
-                                                e.target.closePopup();
-                                            }
-                                        }}
-                                    >
-                                        <Popup minWidth={200} maxWidth={500} closeOnEscapeKey>
-                                            <div
-                                                className="flex flex-col h-full w-full justify-center items-center border-[0.1rem] border-primary rounded-xl px-3"
-                                            >
-                                                <p className="font-medium sm:text-sm md:text-lg">{place.name}</p>
-                                            </div>
-                                        </Popup>
-                                    </Marker>
-                                );
-                            }
-                            return null; // Safeguard to avoid rendering invalid data
-                        })}
-                    </MarkerClusterGroup>
+            {allLocations?.places && allLocations.places.length > 0 && allLocations.places.map((place, index) => {
+              if (place.latitude && place.longitude) {
+                return (
+                  <Marker
+                    riseOnHover
+                    key={index}
+                    position={[place.latitude, place.longitude]}
+                    icon={placeIcon}
+                    eventHandlers={{
+                      mouseover: (e) => {
+                        if (getDeviceType() === 'Mobile') return;
+                        e.target.openPopup();
+                      },
+                      mouseout: (e) => {
+                        if (getDeviceType() === 'Mobile') return;
+                        e.target.closePopup();
+                      }
+                    }}
+                  >
+                    <Popup minWidth={200} maxWidth={500} closeOnEscapeKey>
+                      <div
+                        className="flex flex-col h-full w-full justify-center items-center border-[0.1rem] border-primary rounded-xl px-3"
+                      >
+                        <p className="font-medium sm:text-sm md:text-lg">{place.name}</p>
+                      </div>
+                    </Popup>
+                  </Marker>
+                );
+              }
+              return null; // Safeguard to avoid rendering invalid data
+            })}
+          </MarkerClusterGroup>
 
-                    {polylineCoordinates.length > 0 && (
-                        <RenderPolyline
-                            polyline={polylineCoordinates}
-                            firstCoordinate={firstCoordinate}
-                            lastCoordinate={lastCoordinate}
-                            estimatedDistance={roundedDistance}
-                        />
-                    )}
+          {polylineCoordinates.length > 0 && (
+            <RenderPolyline
+              polyline={polylineCoordinates}
+              firstCoordinate={firstCoordinate}
+              lastCoordinate={lastCoordinate}
+              estimatedDistance={roundedDistance}
+            />
+          )}
 
-                    <ClickMarker/>
-                </LayersControl>
-            </MapContainer>
-        </div>
-    );
+          <ClickMarker />
+        </LayersControl>
+      </MapContainer>
+    </div>
+  );
 };
 
 export default MapView;
